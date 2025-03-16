@@ -1,0 +1,76 @@
+name: MsSqlClrRelease
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags: [ "v*" ]
+    paths:
+      - 'WDS.MsSql.Clr/**'
+      - 'WDS.MsSql.Scripts/**'
+      - '.github/workflows/release.yml'
+
+jobs:
+  docker:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Add msbuild
+        uses: microsoft/setup-msbuild@v2
+        with:
+          msbuild-architecture: x64
+          
+      - name: Decode snk file
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          encodedString: ${{ secrets.WDS_PRIVATE_SNK_64 }}
+          fileName: wds-private.snk
+          fileDir: WDS.MsSql.Clr
+          
+      - name: Build project
+        run: msbuild WDS.MsSql.Clr/WDS.MsSql.Clr.csproj /p:Configuration=Release
+        
+      - name: Prepare release files
+        run: |
+          New-Item -ItemType Directory -Path Artifacts -Force
+          Copy-Item -Path WDS.MsSql.Clr/bin/Release/WDS.MsSql.Clr.dll -Destination Artifacts/
+          Copy-Item -Path WDS.MsSql.Clr/bin/Release/WDS.MsSql.Clr.hash -Destination Artifacts/
+          Copy-Item -Path WDS.MsSql.Scripts/* -Destination Artifacts/
+        shell: powershell
+        
+      - name: Zip release files
+        run: Compress-Archive -Path Artifacts/* -DestinationPath Artifacts.zip
+        shell: powershell
+
+      - name: Add current release
+        id: upload-current-release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          release_name: WdsMsSqlClr ${{ github.ref_name }}
+          tag: ${{ github.ref }}
+          file: Artifacts.zip
+          file_glob: true
+          overwrite: false
+          body: "Web Data Source MSSQL CLR library Release. The Artifacts.zip contains the compiled CLR assembly and necessary SQL scripts to deploy the assembly easily"
+      
+      - name: Delete latest release
+        uses: dev-drprasad/delete-tag-and-release@v1.1
+        with:
+          tag_name: latest
+          delete_release: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Add latest release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          release_name: WdsMsSqlClr latest
+          tag: latest
+          file: Artifacts.zip
+          file_glob: true
+          overwrite: false
+          body: "The latest release of Web Data Source MSSQL CLR library. The Artifacts.zip contains the compiled CLR assembly and necessary SQL scripts to deploy the assembly easily"
