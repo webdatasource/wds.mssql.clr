@@ -12,8 +12,8 @@ namespace WDS.MsSql.Clr.Tests
         private static readonly Assembly _dapiAssembly = Assembly.LoadFile(Path.GetFullPath("../../../../wds.kesa.dotnet/Dapi/WDS.Dapi.Core/bin/Debug/net8.0/WDS.Dapi.Core.dll"));
 
         [Test]
-        // [TestCase("WDS.Dapi.Core.PublicDataContracts.Input.Jobs.JobConfig", typeof(JobConfig))]
-        // [TestCase("WDS.Dapi.Core.PublicDataContracts.Output.Tasks.DownloadTask", typeof(DownloadTask))]
+        [TestCase("WDS.Dapi.Core.PublicDataContracts.Input.Jobs.JobConfig", typeof(JobConfig))]
+        [TestCase("WDS.Dapi.Core.PublicDataContracts.Output.Tasks.DownloadTask", typeof(DownloadTask))]
         [TestCase("WDS.Dapi.Core.PublicDataContracts.Output.Tasks.Info.DownloadTaskStatus", typeof(DownloadTaskStatus))]
         public void JobConfigTest(string dapiDataContractTypeFullName, Type thisDataContractType)
         {
