@@ -24,10 +24,9 @@ public static partial class ClrFunctions
         var pathAndQuery = $"/api/v1/tasks/{downloadTask.Id}/scrape?selector={selector}";
         if (attributeName is not null)
             pathAndQuery += $"&attributeName={attributeName}";
-        if (_serverApiXml.TryGet(downloadTask.Server.Uri, pathAndQuery, out var statusCode, out var responseString))
-            if (!string.IsNullOrWhiteSpace(responseString))
-                return responseString.Deserialize<string[]>(_stringArraySerializer);
-        return new[] { ServerApi.BuildApiRequestError(statusCode, responseString) };
+        if (_serverApiXml.TryGet<string[]>(downloadTask.Server.Uri, pathAndQuery, _stringArraySerializer, out var values, out var error))
+            return values;
+        return new[] { error };
     }
 
     /// <summary>

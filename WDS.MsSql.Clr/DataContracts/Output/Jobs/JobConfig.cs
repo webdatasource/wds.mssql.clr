@@ -13,17 +13,11 @@ using WDS.MsSql.Clr.Serialization.DataContracts;
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class JobConfig : DataContractBase
 {
-    private ServerConfig _server = ServerConfig.Parse("wds://localhost:2807");
-
     /// <summary>
     /// Server configuration associated with the job (if not set the following default connection string is used: wds://localhost:2807)
     /// </summary>
     [XmlIgnore]
-    public ServerConfig Server
-    {
-        get => _server;
-        set => _server = value;
-    }
+    public ServerConfig Server { get; set; } = ServerConfig.Parse("wds://localhost:2807");
 
     /// <summary>
     /// Enum filed wrapper for Type

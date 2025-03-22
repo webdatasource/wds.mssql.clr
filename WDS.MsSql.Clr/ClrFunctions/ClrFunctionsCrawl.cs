@@ -26,14 +26,13 @@ public static partial class ClrFunctions
     public static IEnumerable Start(JobConfig jobConfig)
     {
         const string pathAndQuery = "/api/v1/jobs/start";
-        if (_serverApiXml.TryPost(jobConfig.Server.Uri, pathAndQuery, jobConfig.ToString(), out var statusCode, out var responseString))
-            if (!string.IsNullOrWhiteSpace(responseString))
-                return BuildTasks(responseString, jobConfig.Server);
+        if (_serverApiXml.TryPost<DownloadTask[]>(jobConfig.Server.Uri, pathAndQuery, jobConfig.ToString(), _downloadTaskArraySerializer, out var tasks, out var error))
+            return BuildTasks(tasks, jobConfig.Server);
         return new[]
         {
             new DownloadTask
             {
-                Error = ServerApi.BuildApiRequestError(statusCode, responseString)
+                Error = error
             }
         };
     }
@@ -57,14 +56,13 @@ public static partial class ClrFunctions
         if (downloadTask.Error is not null)
             return new[] { downloadTask };
         var pathAndQuery = $"/api/v1/tasks/{downloadTask.Id}/crawl?selector={selector}";
-        if (_serverApiXml.TryGet(downloadTask.Server.Uri, pathAndQuery, out var statusCode, out var responseString))
-            if (!string.IsNullOrWhiteSpace(responseString))
-                return BuildTasks(responseString, downloadTask.Server);
+        if (_serverApiXml.TryGet<DownloadTask[]>(downloadTask.Server.Uri, pathAndQuery, _downloadTaskArraySerializer, out var tasks, out var error))
+            return BuildTasks(tasks, downloadTask.Server);
         return new[]
         {
             new DownloadTask
             {
-                Error = ServerApi.BuildApiRequestError(statusCode, responseString)
+                Error = error
             }
         };
     }
@@ -72,12 +70,11 @@ public static partial class ClrFunctions
     /// <summary>
     /// Builds download tasks from an XML string
     /// </summary>
-    /// <param name="responseString">Tasks XML string</param>
+    /// <param name="tasks">Tasks</param>
     /// <param name="serverConfig">Current job server config</param>
     /// <returns>Array of download tasks</returns>
-    private static IEnumerable BuildTasks(string responseString, ServerConfig serverConfig)
+    private static IEnumerable BuildTasks(DownloadTask[] tasks, ServerConfig serverConfig)
     {
-        var tasks = responseString.Deserialize<DownloadTask[]>(_downloadTaskArraySerializer);
         foreach (var task in tasks)
             task.Server = serverConfig;
         return tasks;
