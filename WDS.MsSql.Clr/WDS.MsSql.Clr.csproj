@@ -54,7 +54,7 @@
         <Compile Include="ClrFunctions\ClrFunctionsCrawl.cs"/>
         <Compile Include="ClrFunctions\ClrFunctionsScrape.cs"/>
         <Compile Include="ClrFunctions\ClrFunctionsStatus.cs"/>
-        <Compile Include="ClrFunctions\Server\ServerApi.cs"/>
+        <Compile Include="ClrFunctions\Server\ServerApiBase.cs" />
         <Compile Include="ClrFunctions\Server\ServerApiTxt.cs"/>
         <Compile Include="ClrFunctions\Server\ServerApiXml.cs"/>
         <Compile Include="DataContracts\Common\HttpHeader.cs"/>
@@ -93,7 +93,6 @@
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="Serialization\EnumSerializationExtensions.cs" />
         <Compile Include="Serialization\XmlStringWriter.cs" />
-        <Compile Include="Serialization\XmlSerializationExtensions.cs"/>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

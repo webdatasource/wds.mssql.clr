@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Xml;
 using System.Xml.Serialization;
 using WDS.MsSql.Clr.Server;
 
@@ -39,7 +38,7 @@ namespace WDS.MsSql.Clr.Serialization.DataContracts
         public string Serialize(object instance)
         {
             var stringBuilder = new StringBuilder();
-            using var writer = new XmlStringWriter(stringBuilder, ServerApi.Encoding);
+            using var writer = new XmlStringWriter(stringBuilder, ServerApiBase.Encoding);
             _xmlSerializer.Serialize(writer, instance);
             return stringBuilder.ToString();
         }
@@ -78,7 +77,8 @@ namespace WDS.MsSql.Clr.Serialization.DataContracts
 
             try
             {
-                res = xmlString.Deserialize<TRes>(_xmlSerializer);
+                using var reader = new StringReader(xmlString);
+                res = (TRes)_xmlSerializer.Deserialize(reader);
                 return true;
             }
             catch

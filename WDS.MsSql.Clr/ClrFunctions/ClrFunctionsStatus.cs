@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr.Server;
 
 public static partial class ClrFunctions
 {
+    private static readonly XmlSerializer _downloadTaskStatusSerializer = new(typeof(DownloadTaskStatus));
+
     /// <summary>
     /// Internal data contract to build status results table
     /// </summary>
@@ -50,8 +53,8 @@ public static partial class ClrFunctions
     public static IEnumerable ServerStatus(ServerConfig serverConfig)
     {
         var statusResultRows = new List<StatusResultRow>();
-        var isReady = _serverApiText.TryGet(serverConfig.Uri, "/ready", out var statusCode, out var responseString);
-        var isReadyDescription = isReady ? $"Status code: {statusCode}; Response: {responseString}" : ServerApi.BuildApiRequestError(statusCode, responseString);
+        var isReady = _serverApiText.TryGet(serverConfig.Uri, "/ready", out var responseString, out var error);
+        var isReadyDescription = isReady ? responseString : error;
         statusResultRows.Add(new StatusResultRow("Ready", isReady.ToString(), isReadyDescription));
         return statusResultRows.ToArray();
     }
@@ -75,13 +78,11 @@ public static partial class ClrFunctions
                 Error = downloadTask.Error
             };
         var pathAndQuery = $"/api/v1/tasks/{downloadTask.Id}/info";
-        if (_serverApiXml.TryGet(downloadTask.Server.Uri, pathAndQuery, out var statusCode, out var responseString))
-            if (!string.IsNullOrWhiteSpace(responseString))
-                return DownloadTaskStatus.Parse(responseString);
-
+        if (_serverApiXml.TryGet<DownloadTaskStatus>(downloadTask.Server.Uri, pathAndQuery, _downloadTaskStatusSerializer, out var downloadTaskStatus, out var error))
+            return downloadTaskStatus;
         return new DownloadTaskStatus
         {
-            Error = ServerApi.BuildApiRequestError(statusCode, responseString)
+            Error = error
         };
     }
 

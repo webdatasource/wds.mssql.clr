@@ -82,14 +82,9 @@ public class ScrapeMultipleParams : ResponseDataContractBase
 
         var serverApi = new ServerApiXml();
         var pathAndQuery = BuildScrapeMultipleRelativeUrl();
-        if (serverApi.TryGet(_downloadTask.Server.Uri, pathAndQuery, out var statusCode, out var responseString))
-            if (!string.IsNullOrWhiteSpace(responseString))
-            {
-                _scrapeResults = responseString.Deserialize<ScrapeResult[]>(_scrapeResultArraySerializer);
-                return _scrapeResults.Single(r => r.Name == name).Values;
-            }
-
-        Error = ServerApi.BuildApiRequestError(statusCode, responseString);
+        if (serverApi.TryGet(_downloadTask.Server.Uri, pathAndQuery, _scrapeResultArraySerializer, out _scrapeResults, out var error))
+            return _scrapeResults.Single(r => r.Name == name).Values;
+        Error = error;
         return new[] { Error };
     }
 
