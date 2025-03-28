@@ -2,7 +2,6 @@ using System;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
@@ -13,6 +12,11 @@ using WDS.MsSql.Clr.Serialization.DataContracts;
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class ProxyConfig : DataContractBase
 {
+    /// <summary>
+    /// Proxy protocol (http|https|socks5)
+    /// </summary>
+    public string Protocol { get; set; }
+
     /// <summary>
     /// Proxy host
     /// </summary>
@@ -76,11 +80,13 @@ public class ProxyConfig : DataContractBase
     }
 
     /// <summary>
-    /// Creates a new instance and fills out it from a config string of the following format 'Host: host; Port: port; UserName: userName; Password: password; ConnectionsLimit: connectionsLimit; AvailableHosts: availableHost1, availableHost2;'
+    /// Creates a new instance and fills out it from a config string of the following format 'Protocol: protocol; Host: host; Port: port; UserName: userName; Password: password; ConnectionsLimit: connectionsLimit; AvailableHosts: availableHost1, availableHost2;'
     /// </summary>
     /// <param name="s">Config string</param>
     public static ProxyConfig Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
+
     private static readonly DataContractSerializer<ProxyConfig> _dataContractSerializer = new DataContractSerializer<ProxyConfig>()
+        .MapValue<string>("Protocol", (proxyConfig, protocol) => proxyConfig.Protocol = protocol)
         .MapValue<string>("Host", (proxyConfig, host) => proxyConfig.Host = host)
         .MapValue<int>("Port", (proxyConfig, port) => proxyConfig.Port = port)
         .MapValue<string>("UserName", (proxyConfig, userName) => proxyConfig.UserName = userName)
@@ -89,30 +95,32 @@ public class ProxyConfig : DataContractBase
         .MapArray<string>("AvailableHosts", (proxyConfig, availableHosts) => proxyConfig.AvailableHosts = availableHosts);
 
     #region MS SQL CLR Required methods and properties
-    
+
     public static ProxyConfig Null { get; } = new() { IsNull = true };
-    
+
     public override string ToString() => _dataContractSerializer.Serialize(this);
-    
+
     protected override void BinaryRead(BinaryReader r)
     {
+        Protocol = r.ReadString();
         Host = r.ReadString();
         Port = r.ReadInt32();
         UserName = r.ReadNullableString();
         Password = r.ReadNullableString();
-        ConnectionsLimit = r.ReadInt32();
+        ConnectionsLimit = r.ReadNullableInt();
         AvailableHosts = r.ReadNullableStringArray();
     }
 
     protected override void BinaryWrite(BinaryWriter w)
     {
+        w.Write(Protocol);
         w.Write(Host);
         w.Write(Port);
         w.WriteNullable(UserName);
         w.WriteNullable(Password);
-        w.Write(ConnectionsLimit ?? -1);
+        w.WriteNullable(ConnectionsLimit);
         w.WriteNullable(AvailableHosts);
     }
-    
+
     #endregion
 }

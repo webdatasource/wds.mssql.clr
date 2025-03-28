@@ -3,11 +3,11 @@ using System.Net;
 
 namespace WDS.MsSql.Clr.Server
 {
-    internal class ServerApiTxt : ServerApiBase
+    internal class ServerApiTxt : ServerApi
     {
-        private readonly string _contentType = "text/plain";
+        private const string _contentType = "text/plain";
 
-        public bool TryGet(Uri serverUri, string pathAndQuery, out string response, out string error)
+        public static bool TryGet(Uri serverUri, string pathAndQuery, out string response, out string error)
         {
             var request = BuildRequest(serverUri, pathAndQuery, WebRequestMethods.Http.Get, _contentType);
             return TryRequest(request, out response, out error);

@@ -102,6 +102,7 @@ namespace WDS.MsSql.Clr.Tests
             Assert.IsTrue(proxiesConfig.SendOvertRequestsOnProxiesFailure);
             Assert.AreEqual(iterateProxyResponseCodes, proxiesConfig.IterateProxyResponseCodes);
 
+            const string proxyProtocol1 = "socks5";
             const string proxyHost1 = "proxyHost1";
             const int proxyPort1 = 8080;
             const string proxyUserName1 = "proxyUserName1";
@@ -109,8 +110,9 @@ namespace WDS.MsSql.Clr.Tests
             const int proxyConnectionsLimit1 = 10;
             const string proxyAvailableHosts1 = "host1, host2";
 
-            proxiesConfig = proxiesConfig.AddProxy(proxyHost1, proxyPort1, proxyUserName1, proxyPassword1, proxyConnectionsLimit1, proxyAvailableHosts1);
+            proxiesConfig = proxiesConfig.AddProxy(proxyProtocol1, proxyHost1, proxyPort1, proxyUserName1, proxyPassword1, proxyConnectionsLimit1, proxyAvailableHosts1);
             Assert.AreEqual(1, proxiesConfig.Proxies.Length);
+            Assert.AreEqual(proxyProtocol1, proxiesConfig.Proxies[0].Protocol);
             Assert.AreEqual(proxyHost1, proxiesConfig.Proxies[0].Host);
             Assert.AreEqual(proxyPort1, proxiesConfig.Proxies[0].Port);
             Assert.AreEqual(proxyUserName1, proxiesConfig.Proxies[0].UserName);
@@ -120,6 +122,7 @@ namespace WDS.MsSql.Clr.Tests
             Assert.AreEqual("host1", proxiesConfig.Proxies[0].AvailableHosts[0]);
             Assert.AreEqual("host2", proxiesConfig.Proxies[0].AvailableHosts[1]);
 
+            const string proxyProtocol2 = "https";
             const string proxyHost2 = "proxyHost2";
             const int proxyPort2 = 8081;
             const string proxyUserName2 = "proxyUserName2";
@@ -129,10 +132,11 @@ namespace WDS.MsSql.Clr.Tests
             const string availableHost2 = "host4";
             const string availableHost3 = "host5";
 
-            var proxyConfig = ProxyConfig.Parse($"Host: {proxyHost2}; Port: {proxyPort2}; UserName: {proxyUserName2}; Password: {proxyPassword2}; ConnectionsLimit: {proxyConnectionsLimit2}; AvailableHosts: {availableHost1}, {availableHost2}, {availableHost3};");
+            var proxyConfig = ProxyConfig.Parse($"Protocol: {proxyProtocol2}; Host: {proxyHost2}; Port: {proxyPort2}; UserName: {proxyUserName2}; Password: {proxyPassword2}; ConnectionsLimit: {proxyConnectionsLimit2}; AvailableHosts: {availableHost1}, {availableHost2}, {availableHost3};");
             proxyConfig.AddAvailableHost(availableHost3);
             proxiesConfig = proxiesConfig.AddProxyConfig(proxyConfig);
             Assert.AreEqual(2, proxiesConfig.Proxies.Length);
+            Assert.AreEqual(proxyProtocol2, proxiesConfig.Proxies[1].Protocol);
             Assert.AreEqual(proxyHost2, proxiesConfig.Proxies[1].Host);
             Assert.AreEqual(proxyPort2, proxiesConfig.Proxies[1].Port);
             Assert.AreEqual(proxyUserName2, proxiesConfig.Proxies[1].UserName);

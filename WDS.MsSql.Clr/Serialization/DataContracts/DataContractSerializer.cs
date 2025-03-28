@@ -38,7 +38,7 @@ namespace WDS.MsSql.Clr.Serialization.DataContracts
         public string Serialize(object instance)
         {
             var stringBuilder = new StringBuilder();
-            using var writer = new XmlStringWriter(stringBuilder, ServerApiBase.Encoding);
+            using var writer = new XmlStringWriter(stringBuilder, ServerApi.Encoding);
             _xmlSerializer.Serialize(writer, instance);
             return stringBuilder.ToString();
         }

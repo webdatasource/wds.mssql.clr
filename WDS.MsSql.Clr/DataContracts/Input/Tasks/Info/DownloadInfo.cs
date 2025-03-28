@@ -1,7 +1,6 @@
 using System;
 using System.Data.SqlTypes;
 using System.IO;
-using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;

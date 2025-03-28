@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
@@ -44,7 +42,7 @@ public class ProxiesConfig : DataContractBase
     {
         if (Proxies is null)
             Proxies = new[] { proxy };
-        else if (!Proxies.Any(p => p.Host == proxy.Host && p.Port == proxy.Port && p.UserName == proxy.UserName))
+        else if (!Proxies.Any(p => p.Protocol == proxy.Protocol && p.Host == proxy.Host && p.Port == proxy.Port && p.UserName == proxy.UserName))
         {
             var proxies = Proxies;
             Array.Resize(ref proxies, proxies.Length + 1);
@@ -58,6 +56,7 @@ public class ProxiesConfig : DataContractBase
     /// <summary>
     /// Adds a new proxy
     /// </summary>
+    /// <param name="protocol">Proxy protocol (http|https|socks5)</param>
     /// <param name="host">Proxy host</param>
     /// <param name="port">Proxy port</param>
     /// <param name="userName">Proxy username</param>
@@ -65,10 +64,11 @@ public class ProxiesConfig : DataContractBase
     /// <param name="connectionsLimit">Proxy connections limit (how many connections can be established through this proxy at one time)</param>
     /// <param name="availableHosts">A list of available hosts that can be accessed through this proxy</param>
     /// <returns></returns>
-    public ProxiesConfig AddProxy(string host, int port, string userName, string password, int? connectionsLimit, string availableHosts)
+    public ProxiesConfig AddProxy(string protocol, string host, int port, string userName, string password, int? connectionsLimit, string availableHosts)
     {
         AddProxyConfig(new ProxyConfig
         {
+            Protocol = protocol,
             Host = host,
             Port = port,
             UserName = userName,

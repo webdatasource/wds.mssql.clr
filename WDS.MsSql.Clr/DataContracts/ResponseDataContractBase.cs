@@ -1,5 +1,4 @@
 using System.IO;
-using System.Xml.Serialization;
 using WDS.MsSql.Clr.Serialization;
 
 /// <summary>
@@ -21,11 +20,10 @@ public abstract class ResponseDataContractBase : DataContractBase
             return;
         
         Error = r.ReadNullableString();
-        if (Error is null)
-        {
-            BinaryRead(r);
-            Validate();
-        }
+        if (Error is not null) 
+            return;
+        BinaryRead(r);
+        Validate();
     }
 
     public override void Write(BinaryWriter w)
@@ -35,11 +33,10 @@ public abstract class ResponseDataContractBase : DataContractBase
             return;
         
         w.WriteNullable(Error);
-        if (Error is null)
-        {
-            Validate();
-            BinaryWrite(w);
-        }
+        if (Error is not null) 
+            return;
+        Validate();
+        BinaryWrite(w);
     }
 
     #endregion

@@ -24,7 +24,7 @@ public static partial class ClrFunctions
         var pathAndQuery = $"/api/v1/tasks/{downloadTask.Id}/scrape?selector={selector}";
         if (attributeName is not null)
             pathAndQuery += $"&attributeName={attributeName}";
-        if (_serverApiXml.TryGet<string[]>(downloadTask.Server.Uri, pathAndQuery, _stringArraySerializer, out var values, out var error))
+        if (ServerApiXml.TryGet<string[]>(downloadTask.Server.Uri, pathAndQuery, _stringArraySerializer, out var values, out var error))
             return values;
         return new[] { error };
     }

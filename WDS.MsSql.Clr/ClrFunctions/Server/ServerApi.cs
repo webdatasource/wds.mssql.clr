@@ -5,7 +5,7 @@ using System.Text;
 
 namespace WDS.MsSql.Clr.Server
 {
-    internal abstract class ServerApiBase
+    internal abstract class ServerApi
     {
         public static readonly Encoding Encoding = Encoding.UTF8;
 

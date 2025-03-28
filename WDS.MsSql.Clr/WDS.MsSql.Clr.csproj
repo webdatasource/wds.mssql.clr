@@ -49,12 +49,11 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="ClrFunctions\ClrFunctionsBase.cs"/>
         <Compile Include="ClrFunctions\ClrFunctionsCommon.cs" />
         <Compile Include="ClrFunctions\ClrFunctionsCrawl.cs"/>
         <Compile Include="ClrFunctions\ClrFunctionsScrape.cs"/>
         <Compile Include="ClrFunctions\ClrFunctionsStatus.cs"/>
-        <Compile Include="ClrFunctions\Server\ServerApiBase.cs" />
+        <Compile Include="ClrFunctions\Server\ServerApi.cs" />
         <Compile Include="ClrFunctions\Server\ServerApiTxt.cs"/>
         <Compile Include="ClrFunctions\Server\ServerApiXml.cs"/>
         <Compile Include="DataContracts\Common\HttpHeader.cs"/>

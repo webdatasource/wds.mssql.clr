@@ -74,18 +74,24 @@ public class ScrapeMultipleParams : ResponseDataContractBase
     /// <returns>Scraped data (string) array</returns>
     private string[] GetValues(string name)
     {
-        if (_scrapeResults is not null)
-            return _scrapeResults.Single(r => r.Name == name).Values;
+        if (_downloadTask.Error is not null)
+            return new[] { _downloadTask.Error };
 
         if (Error is not null)
             return new[] { Error };
 
-        var serverApi = new ServerApiXml();
-        var pathAndQuery = BuildScrapeMultipleRelativeUrl();
-        if (serverApi.TryGet(_downloadTask.Server.Uri, pathAndQuery, _scrapeResultArraySerializer, out _scrapeResults, out var error))
-            return _scrapeResults.Single(r => r.Name == name).Values;
-        Error = error;
-        return new[] { Error };
+        if (_scrapeResults is null)
+        {
+            var pathAndQuery = BuildScrapeMultipleRelativeUrl();
+            if (!ServerApiXml.TryGet(_downloadTask.Server.Uri, pathAndQuery, _scrapeResultArraySerializer, out _scrapeResults, out var error))
+            {
+                Error = error;
+                return new[] { Error };
+            }
+        }
+
+        var scrapeResult = _scrapeResults.SingleOrDefault(r => r.Name == name);
+        return scrapeResult is not null ? scrapeResult.Values : new[] { $"ERROR: Scrape parameter not found: {name}" };
     }
 
     /// <summary>

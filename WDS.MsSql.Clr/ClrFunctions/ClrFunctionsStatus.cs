@@ -53,7 +53,7 @@ public static partial class ClrFunctions
     public static IEnumerable ServerStatus(ServerConfig serverConfig)
     {
         var statusResultRows = new List<StatusResultRow>();
-        var isReady = _serverApiText.TryGet(serverConfig.Uri, "/ready", out var responseString, out var error);
+        var isReady = ServerApiTxt.TryGet(serverConfig.Uri, "/ready", out var responseString, out var error);
         var isReadyDescription = isReady ? responseString : error;
         statusResultRows.Add(new StatusResultRow("Ready", isReady.ToString(), isReadyDescription));
         return statusResultRows.ToArray();
@@ -78,7 +78,7 @@ public static partial class ClrFunctions
                 Error = downloadTask.Error
             };
         var pathAndQuery = $"/api/v1/tasks/{downloadTask.Id}/info";
-        if (_serverApiXml.TryGet<DownloadTaskStatus>(downloadTask.Server.Uri, pathAndQuery, _downloadTaskStatusSerializer, out var downloadTaskStatus, out var error))
+        if (ServerApiXml.TryGet<DownloadTaskStatus>(downloadTask.Server.Uri, pathAndQuery, _downloadTaskStatusSerializer, out var downloadTaskStatus, out var error))
             return downloadTaskStatus;
         return new DownloadTaskStatus
         {

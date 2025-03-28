@@ -26,7 +26,7 @@ public static partial class ClrFunctions
     public static IEnumerable Start(JobConfig jobConfig)
     {
         const string pathAndQuery = "/api/v1/jobs/start";
-        if (_serverApiXml.TryPost<DownloadTask[]>(jobConfig.Server.Uri, pathAndQuery, jobConfig.ToString(), _downloadTaskArraySerializer, out var tasks, out var error))
+        if (ServerApiXml.TryPost<DownloadTask[]>(jobConfig.Server.Uri, pathAndQuery, jobConfig.ToString(), _downloadTaskArraySerializer, out var tasks, out var error))
             return BuildTasks(tasks, jobConfig.Server);
         return new[]
         {
@@ -56,7 +56,7 @@ public static partial class ClrFunctions
         if (downloadTask.Error is not null)
             return new[] { downloadTask };
         var pathAndQuery = $"/api/v1/tasks/{downloadTask.Id}/crawl?selector={selector}";
-        if (_serverApiXml.TryGet<DownloadTask[]>(downloadTask.Server.Uri, pathAndQuery, _downloadTaskArraySerializer, out var tasks, out var error))
+        if (ServerApiXml.TryGet<DownloadTask[]>(downloadTask.Server.Uri, pathAndQuery, _downloadTaskArraySerializer, out var tasks, out var error))
             return BuildTasks(tasks, downloadTask.Server);
         return new[]
         {
