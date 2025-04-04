@@ -53,6 +53,7 @@
         <Compile Include="ClrFunctions\ClrFunctionsCrawl.cs"/>
         <Compile Include="ClrFunctions\ClrFunctionsScrape.cs"/>
         <Compile Include="ClrFunctions\ClrFunctionsStatus.cs"/>
+        <Compile Include="ClrFunctions\ClrFunctionsToStringsTable.cs" />
         <Compile Include="ClrFunctions\Server\ServerApi.cs" />
         <Compile Include="ClrFunctions\Server\ServerApiTxt.cs"/>
         <Compile Include="ClrFunctions\Server\ServerApiXml.cs"/>

@@ -7,9 +7,9 @@ namespace WDS.MsSql.Clr.Server
     {
         private const string _contentType = "text/plain";
 
-        public static bool TryGet(Uri serverUri, string pathAndQuery, out string response, out string error)
+        public static bool TryGet(Uri uri, out string response, out string error)
         {
-            var request = BuildRequest(serverUri, pathAndQuery, WebRequestMethods.Http.Get, _contentType);
+            var request = BuildRequest(uri, WebRequestMethods.Http.Get, _contentType);
             return TryRequest(request, out response, out error);
         }
         

@@ -140,7 +140,7 @@ CREATE FUNCTION wds.Start(@jobConfig wds.JobConfig)
     EXTERNAL NAME WdsSqlClrFunctions.ClrFunctions.Start;
 GO
 
-CREATE FUNCTION wds.Crawl(@downloadTask wds.DownloadTask, @selector NVARCHAR(MAX))
+CREATE FUNCTION wds.Crawl(@downloadTask wds.DownloadTask, @selector NVARCHAR(MAX), @attributeName NVARCHAR(MAX))
     RETURNS TABLE
             (
                 Task wds.DownloadTask

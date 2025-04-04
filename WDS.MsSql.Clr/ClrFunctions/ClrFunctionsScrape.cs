@@ -1,9 +1,9 @@
+using System;
 using System.Collections;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
-using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Server;
 
 public static partial class ClrFunctions
@@ -19,12 +19,14 @@ public static partial class ClrFunctions
     /// <returns></returns>
     private static string[] Scrape(DownloadTask downloadTask, string selector, string attributeName)
     {
+        if (downloadTask is null)
+            return Array.Empty<string>();
+
         if (downloadTask.Error is not null)
             return new[] { downloadTask.Error };
-        var pathAndQuery = $"/api/v1/tasks/{downloadTask.Id}/scrape?selector={selector}";
-        if (attributeName is not null)
-            pathAndQuery += $"&attributeName={attributeName}";
-        if (ServerApiXml.TryGet<string[]>(downloadTask.Server.Uri, pathAndQuery, _stringArraySerializer, out var values, out var error))
+
+        var uri = BuildUri(downloadTask.Server.Uri, $"/api/v1/tasks/{downloadTask.Id}/scrape", selector, attributeName);
+        if (ServerApiXml.TryGet<string[]>(uri, _stringArraySerializer, out var values, out var error))
             return values;
         return new[] { error };
     }
@@ -60,7 +62,7 @@ public static partial class ClrFunctions
         IsDeterministic = false,
         IsPrecise = false,
         Name = nameof(ScrapeFirst))]
-    public static SqlString ScrapeFirst(DownloadTask downloadTask, string selector, string attributeName) => Scrape(downloadTask, selector, attributeName).FirstOrDefault();
+    public static SqlString ScrapeFirst(DownloadTask downloadTask, string selector, string attributeName) => Scrape(downloadTask, selector, attributeName).FirstOrDefault() ?? SqlString.Null;
 
 
     /// <summary>

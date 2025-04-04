@@ -52,10 +52,12 @@ public static partial class ClrFunctions
         TableDefinition = "Name NVARCHAR(255), Value NVARCHAR(MAX), Description NVARCHAR(MAX)")]
     public static IEnumerable ServerStatus(ServerConfig serverConfig)
     {
-        var statusResultRows = new List<StatusResultRow>();
-        var isReady = ServerApiTxt.TryGet(serverConfig.Uri, "/ready", out var responseString, out var error);
-        var isReadyDescription = isReady ? responseString : error;
-        statusResultRows.Add(new StatusResultRow("Ready", isReady.ToString(), isReadyDescription));
+        var uri = BuildUri(serverConfig.Uri, "/ready");
+        var isReady = ServerApiTxt.TryGet(uri, out var responseString, out var error);
+        var statusResultRows = new List<StatusResultRow>
+        {
+            new("Ready", isReady.ToString(), isReady ? responseString : error)
+        };
         return statusResultRows.ToArray();
     }
 
@@ -72,29 +74,21 @@ public static partial class ClrFunctions
         Name = nameof(TaskStatus))]
     public static DownloadTaskStatus TaskStatus(DownloadTask downloadTask)
     {
+        if (downloadTask == null)
+            return DownloadTaskStatus.Null;
+        
         if (downloadTask.Error is not null)
             return new DownloadTaskStatus
             {
                 Error = downloadTask.Error
             };
-        var pathAndQuery = $"/api/v1/tasks/{downloadTask.Id}/info";
-        if (ServerApiXml.TryGet<DownloadTaskStatus>(downloadTask.Server.Uri, pathAndQuery, _downloadTaskStatusSerializer, out var downloadTaskStatus, out var error))
+        
+        var uri = BuildUri(downloadTask.Server.Uri, $"/api/v1/tasks/{downloadTask.Id}/info");
+        if (ServerApiXml.TryGet<DownloadTaskStatus>(uri, _downloadTaskStatusSerializer, out var downloadTaskStatus, out var error))
             return downloadTaskStatus;
         return new DownloadTaskStatus
         {
             Error = error
         };
     }
-
-    #region MS SQL CLR Required methods and properties
-
-    private static void FillStatusResultTableRow(object obj, out SqlChars name, out SqlChars value, out SqlChars description)
-    {
-        var row = (StatusResultRow)obj;
-        name = new SqlChars(row.Name);
-        value = new SqlChars(row.Value);
-        description = new SqlChars(row.Description);
-    }
-
-    #endregion
 }

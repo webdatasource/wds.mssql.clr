@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IO;
@@ -65,7 +64,7 @@ public class ScrapeMultipleParams : ResponseDataContractBase
     /// </summary>
     /// <param name="name">Scrape parameter name</param>
     /// <returns>Scraped data (string) or null if nothing found</returns>
-    public SqlString GetFirst(string name) => GetValues(name).FirstOrDefault();
+    public SqlString GetFirst(string name) => GetValues(name).FirstOrDefault() ?? SqlString.Null;
 
     /// <summary>
     /// Performs a batch scrape request and returns all scraped values
@@ -74,6 +73,9 @@ public class ScrapeMultipleParams : ResponseDataContractBase
     /// <returns>Scraped data (string) array</returns>
     private string[] GetValues(string name)
     {
+        if (_downloadTask is null)
+            return Array.Empty<string>();
+        
         if (_downloadTask.Error is not null)
             return new[] { _downloadTask.Error };
 
@@ -82,8 +84,8 @@ public class ScrapeMultipleParams : ResponseDataContractBase
 
         if (_scrapeResults is null)
         {
-            var pathAndQuery = BuildScrapeMultipleRelativeUrl();
-            if (!ServerApiXml.TryGet(_downloadTask.Server.Uri, pathAndQuery, _scrapeResultArraySerializer, out _scrapeResults, out var error))
+            var uri = new Uri(_downloadTask.Server.Uri, BuildScrapeMultipleRelativeUrl());
+            if (!ServerApiXml.TryGet(uri, _scrapeResultArraySerializer, out _scrapeResults, out var error))
             {
                 Error = error;
                 return new[] { Error };

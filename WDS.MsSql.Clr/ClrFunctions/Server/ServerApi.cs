@@ -9,9 +9,8 @@ namespace WDS.MsSql.Clr.Server
     {
         public static readonly Encoding Encoding = Encoding.UTF8;
 
-        protected static HttpWebRequest BuildRequest(Uri serverUri, string pathAndQuery, string method, string accept)
+        protected static HttpWebRequest BuildRequest(Uri uri, string method, string accept)
         {
-            var uri = new Uri(serverUri, pathAndQuery);
             var request = WebRequest.CreateHttp(uri);
             request.Method = method;
             request.Accept = accept;
@@ -20,9 +19,9 @@ namespace WDS.MsSql.Clr.Server
             return request;
         }
 
-        protected static HttpWebRequest BuildRequest(Uri authority, string pathAndQuery, string method, string contentType, string reqData)
+        protected static HttpWebRequest BuildRequest(Uri uri, string method, string contentType, string reqData)
         {
-            var request = BuildRequest(authority, pathAndQuery, method, contentType);
+            var request = BuildRequest(uri, method, contentType);
             request.ContentType = $"{contentType}; charset={Encoding.HeaderName}";
             var bytes = Encoding.GetBytes(reqData);
             request.GetRequestStream().Write(bytes, 0, bytes.Length);

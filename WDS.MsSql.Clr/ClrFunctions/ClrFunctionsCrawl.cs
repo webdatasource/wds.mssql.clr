@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
-using WDS.MsSql.Clr.Serialization;
-using WDS.MsSql.Clr.Serialization.DataContracts;
 using WDS.MsSql.Clr.Server;
 
 public static partial class ClrFunctions
@@ -25,8 +23,8 @@ public static partial class ClrFunctions
         TableDefinition = "Task wds.DownloadTask")]
     public static IEnumerable Start(JobConfig jobConfig)
     {
-        const string pathAndQuery = "/api/v1/jobs/start";
-        if (ServerApiXml.TryPost<DownloadTask[]>(jobConfig.Server.Uri, pathAndQuery, jobConfig.ToString(), _downloadTaskArraySerializer, out var tasks, out var error))
+        var uri = BuildUri(jobConfig.Server.Uri, "/api/v1/jobs/start");
+        if (ServerApiXml.TryPost<DownloadTask[]>(uri, jobConfig.ToString(), _downloadTaskArraySerializer, out var tasks, out var error))
             return BuildTasks(tasks, jobConfig.Server);
         return new[]
         {
@@ -42,6 +40,7 @@ public static partial class ClrFunctions
     /// </summary>
     /// <param name="downloadTask">Download task</param>
     /// <param name="selector">Selector of links on a web page. Format CSS|XPATH: selector</param>
+    /// <param name="attributeName">HTML attribute name to get data from. Optional. By default, href</param>
     /// <returns>Subsequent download tasks array with URLs matched to the selector</returns>
     [SqlFunction(
         DataAccess = DataAccessKind.None,
@@ -51,12 +50,16 @@ public static partial class ClrFunctions
         Name = nameof(Crawl),
         FillRowMethodName = nameof(FillIntentTableRow),
         TableDefinition = "Task wds.DownloadTask")]
-    public static IEnumerable Crawl(DownloadTask downloadTask, string selector)
+    public static IEnumerable Crawl(DownloadTask downloadTask, string selector, string attributeName)
     {
+        if (downloadTask is null)
+            return Array.Empty<DownloadTask>();
+        
         if (downloadTask.Error is not null)
             return new[] { downloadTask };
-        var pathAndQuery = $"/api/v1/tasks/{downloadTask.Id}/crawl?selector={selector}";
-        if (ServerApiXml.TryGet<DownloadTask[]>(downloadTask.Server.Uri, pathAndQuery, _downloadTaskArraySerializer, out var tasks, out var error))
+        
+        var uri = BuildUri(downloadTask.Server.Uri, $"/api/v1/tasks/{downloadTask.Id}/crawl", selector, attributeName);
+        if (ServerApiXml.TryGet<DownloadTask[]>(uri, _downloadTaskArraySerializer, out var tasks, out var error))
             return BuildTasks(tasks, downloadTask.Server);
         return new[]
         {
@@ -79,10 +82,4 @@ public static partial class ClrFunctions
             task.Server = serverConfig;
         return tasks;
     }
-
-    #region MS SQL CLR Required methods and properties
-
-    private static void FillIntentTableRow(object obj, out DownloadTask intentRow) => intentRow = (DownloadTask)obj;
-
-    #endregion
 }
