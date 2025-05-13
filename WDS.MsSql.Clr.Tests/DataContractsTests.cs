@@ -37,13 +37,13 @@ namespace WDS.MsSql.Clr.Tests
             const string header2Value2 = "header2value2";
 
             var requestDefaultsConfig = HeadersConfig.Parse(string.Empty);
-            requestDefaultsConfig.AddHeader(header1Name, header1Value1);
+            requestDefaultsConfig.AppendHeader(header1Name, header1Value1);
             Assert.AreEqual(1, requestDefaultsConfig.DefaultRequestHeaders.Length);
             Assert.AreEqual(1, requestDefaultsConfig.DefaultRequestHeaders[0].Values.Length);
             Assert.AreEqual(header1Name, requestDefaultsConfig.DefaultRequestHeaders[0].Name);
             Assert.AreEqual(header1Value1, requestDefaultsConfig.DefaultRequestHeaders[0].Values[0]);
 
-            requestDefaultsConfig.AddHeader(header1Name, header1Value2);
+            requestDefaultsConfig.AppendHeader(header1Name, header1Value2);
             Assert.AreEqual(1, requestDefaultsConfig.DefaultRequestHeaders.Length);
             Assert.AreEqual(2, requestDefaultsConfig.DefaultRequestHeaders[0].Values.Length);
             Assert.AreEqual(header1Name, requestDefaultsConfig.DefaultRequestHeaders[0].Name);

@@ -54,7 +54,7 @@ public class HeadersConfig : DataContractBase
     /// <param name="name">Header name</param>
     /// <param name="value">Header value</param>
     /// <returns></returns>
-    public HeadersConfig AddHeader(string name, string value)
+    public HeadersConfig AppendHeader(string name, string value)
     {
         var header = DefaultRequestHeaders?.FirstOrDefault(h => h.Name == name);
         if (header == null)
@@ -107,8 +107,6 @@ public class HeadersConfig : DataContractBase
     private static readonly DataContractSerializer<HeadersConfig> _dataContractSerializer = new();
 
     #region MS SQL CLR Required methods and properties
-
-    private static readonly XmlSerializer _headersConfigSerializer = new(typeof(HeadersConfig));
 
     public static HeadersConfig Null { get; } = new() { IsNull = true };
 

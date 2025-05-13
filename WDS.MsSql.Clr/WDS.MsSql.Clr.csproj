@@ -57,7 +57,7 @@
         <Compile Include="ClrFunctions\Server\ServerApi.cs" />
         <Compile Include="ClrFunctions\Server\ServerApiTxt.cs"/>
         <Compile Include="ClrFunctions\Server\ServerApiXml.cs"/>
-        <Compile Include="DataContracts\Common\HttpHeader.cs"/>
+        <Compile Include="DataContracts\Common\HttpHeader.cs" />
         <Compile Include="DataContracts\DataContractBase.cs"/>
         <Compile Include="DataContracts\Input\Tasks\DownloadTask.cs"/>
         <Compile Include="DataContracts\Input\Tasks\Info\Cookie.cs"/>
