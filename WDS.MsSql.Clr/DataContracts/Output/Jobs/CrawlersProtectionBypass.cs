@@ -69,9 +69,9 @@ public class CrawlersProtectionBypass : DataContractBase
     public static CrawlersProtectionBypass Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     private static readonly DataContractSerializer<CrawlersProtectionBypass> _dataContractSerializer = new DataContractSerializer<CrawlersProtectionBypass>()
-        .MapValue<int>("MaxResponseSizeKb", (crawlersProtectionBypass, maxResponseSizeKb) => crawlersProtectionBypass.MaxResponseSizeKb = maxResponseSizeKb)
-        .MapValue<int>("MaxRedirectHops", (crawlersProtectionBypass, maxRedirectHops) => crawlersProtectionBypass.MaxRedirectHops = maxRedirectHops)
-        .MapValue<int>("RequestTimeoutSec", (crawlersProtectionBypass, requestTimeoutSec) => crawlersProtectionBypass.RequestTimeoutSec = requestTimeoutSec);
+        .MapValue<int>(nameof(MaxResponseSizeKb), (crawlersProtectionBypass, maxResponseSizeKb) => crawlersProtectionBypass.MaxResponseSizeKb = maxResponseSizeKb)
+        .MapValue<int>(nameof(MaxRedirectHops), (crawlersProtectionBypass, maxRedirectHops) => crawlersProtectionBypass.MaxRedirectHops = maxRedirectHops)
+        .MapValue<int>(nameof(RequestTimeoutSec), (crawlersProtectionBypass, requestTimeoutSec) => crawlersProtectionBypass.RequestTimeoutSec = requestTimeoutSec);
 
 
     #region MS SQL CLR Required methods and properties

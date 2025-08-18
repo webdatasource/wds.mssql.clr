@@ -61,10 +61,10 @@ namespace WDS.MsSql.Clr.Tests
         [Test]
         public void JobRestartConfigParseTest([Values] JobRestartModes mode)
         {
-            var jobRestartConfig = JobRestartConfig.Parse(string.Empty);
+            var jobRestartConfig = RestartConfig.Parse(string.Empty);
             Assert.AreEqual(JobRestartModes.Continue, jobRestartConfig.RestartMode);
 
-            jobRestartConfig = JobRestartConfig.Parse($"JobRestartMode: {mode}");
+            jobRestartConfig = RestartConfig.Parse($"JobRestartMode: {mode}");
             Assert.AreEqual(mode, jobRestartConfig.RestartMode);
         }
 
@@ -151,14 +151,14 @@ namespace WDS.MsSql.Clr.Tests
         [Test]
         public void DownloadErrorHandlingPolicyParseTest([Values] DownloadErrorHandlingPolicies policy)
         {
-            var downloadErrorHandlingPolicy = DownloadErrorHandlingPolicy.Parse(string.Empty);
+            var downloadErrorHandlingPolicy = DownloadErrorHandling.Parse(string.Empty);
             Assert.AreEqual(DownloadErrorHandlingPolicies.Skip, downloadErrorHandlingPolicy.Policy);
             Assert.IsNull(downloadErrorHandlingPolicy.RetryPolicyParams);
 
             const int retryDelayMs = 1000;
             const int retriesLimit = 3;
 
-            downloadErrorHandlingPolicy = DownloadErrorHandlingPolicy.Parse($"ErrorHandlingPolicy: {policy}");
+            downloadErrorHandlingPolicy = DownloadErrorHandling.Parse($"ErrorHandlingPolicy: {policy}");
             if (policy == DownloadErrorHandlingPolicies.Retry)
                 downloadErrorHandlingPolicy.RetryPolicyParams = RetryPolicyParams.Parse($"RetryDelayMs: {retryDelayMs}; RetriesLimit: {retriesLimit}");
 

@@ -64,8 +64,8 @@ CREATE TYPE wds.ProxiesConfig
 CREATE TYPE wds.RetryPolicyParams
     EXTERNAL NAME WdsSqlClrFunctions.RetryPolicyParams;
 
-CREATE TYPE wds.DownloadErrorHandlingPolicy
-    EXTERNAL NAME WdsSqlClrFunctions.DownloadErrorHandlingPolicy;
+CREATE TYPE wds.DownloadErrorHandling
+    EXTERNAL NAME WdsSqlClrFunctions.DownloadErrorHandling;
 
 CREATE TYPE wds.CrawlDelay
     EXTERNAL NAME WdsSqlClrFunctions.CrawlDelay;
@@ -76,8 +76,8 @@ CREATE TYPE wds.CrawlersProtectionBypass
 CREATE TYPE wds.HeadersConfig
     EXTERNAL NAME WdsSqlClrFunctions.HeadersConfig;
 
-CREATE TYPE wds.JobRestartConfig
-    EXTERNAL NAME WdsSqlClrFunctions.JobRestartConfig;
+CREATE TYPE wds.RestartConfig
+    EXTERNAL NAME WdsSqlClrFunctions.RestartConfig;
 
 CREATE TYPE wds.HttpsConfig
     EXTERNAL NAME WdsSqlClrFunctions.HttpsConfig;
@@ -90,30 +90,27 @@ CREATE TYPE wds.ServerConfig
 
 CREATE TYPE wds.JobConfig
     EXTERNAL NAME WdsSqlClrFunctions.JobConfig;
-GO
 
 CREATE TYPE wds.DownloadTask
     EXTERNAL NAME WdsSqlClrFunctions.DownloadTask;
-GO
 
 CREATE TYPE wds.Cookie
     EXTERNAL NAME WdsSqlClrFunctions.Cookie;
-GO
 
 CREATE TYPE wds.DownloadInfo
     EXTERNAL NAME WdsSqlClrFunctions.DownloadInfo;
-GO
 
 CREATE TYPE wds.DownloadTaskStatus
     EXTERNAL NAME WdsSqlClrFunctions.DownloadTaskStatus;
-GO
 
 CREATE TYPE wds.ScrapeMultipleParams
     EXTERNAL NAME WdsSqlClrFunctions.ScrapeMultipleParams;
-GO
 
 CREATE TYPE wds.StringDataItems
     EXTERNAL NAME WdsSqlClrFunctions.StringDataItems;
+
+CREATE TYPE wds.CrossDomainAccess
+    EXTERNAL NAME WdsSqlClrFunctions.CrossDomainAccess;
 GO
 
 -- ADDING FUNCTIONS

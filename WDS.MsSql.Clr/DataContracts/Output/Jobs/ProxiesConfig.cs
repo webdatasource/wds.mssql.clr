@@ -98,9 +98,9 @@ public class ProxiesConfig : DataContractBase
     public static ProxiesConfig Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     private static readonly DataContractSerializer<ProxiesConfig> _dataContractSerializer = new DataContractSerializer<ProxiesConfig>()
-        .MapValue<bool>("UseProxy", (proxiesConfig, useProxy) => proxiesConfig.UseProxy = useProxy)
-        .MapValue<bool>("SendOvertRequestsOnProxiesFailure", (proxiesConfig, sendOvertRequestOnProxiesFailure) => proxiesConfig.SendOvertRequestsOnProxiesFailure = sendOvertRequestOnProxiesFailure)
-        .MapArray<int>("IterateProxyResponseCodes", (proxiesConfig, iterateProxyResponseCodes) => proxiesConfig.IterateProxyResponseCodes = string.Join(", ", iterateProxyResponseCodes));
+        .MapValue<bool>(nameof(UseProxy), (proxiesConfig, useProxy) => proxiesConfig.UseProxy = useProxy)
+        .MapValue<bool>(nameof(SendOvertRequestsOnProxiesFailure), (proxiesConfig, sendOvertRequestOnProxiesFailure) => proxiesConfig.SendOvertRequestsOnProxiesFailure = sendOvertRequestOnProxiesFailure)
+        .MapArray<int>(nameof(IterateProxyResponseCodes), (proxiesConfig, iterateProxyResponseCodes) => proxiesConfig.IterateProxyResponseCodes = string.Join(", ", iterateProxyResponseCodes));
 
     #region MS SQL CLR Required methods and properties
     

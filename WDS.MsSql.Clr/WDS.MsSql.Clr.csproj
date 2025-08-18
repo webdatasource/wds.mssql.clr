@@ -71,12 +71,14 @@
         <Compile Include="DataContracts\Output\Jobs\CookiesConfig.cs"/>
         <Compile Include="DataContracts\Output\Jobs\CrawlDelay.cs"/>
         <Compile Include="DataContracts\Output\Jobs\CrawlersProtectionBypass.cs"/>
+        <Compile Include="DataContracts\Output\Jobs\CrossDomainAccessPolicies.cs" />
+        <Compile Include="DataContracts\Output\Jobs\CrossDomainAccess.cs" />
         <Compile Include="DataContracts\Output\Jobs\DownloadErrorHandlingPolicies.cs" />
-        <Compile Include="DataContracts\Output\Jobs\DownloadErrorHandlingPolicy.cs"/>
+        <Compile Include="DataContracts\Output\Jobs\DownloadErrorHandling.cs" />
         <Compile Include="DataContracts\Output\Jobs\HeadersConfig.cs"/>
         <Compile Include="DataContracts\Output\Jobs\HttpsConfig.cs"/>
         <Compile Include="DataContracts\Output\Jobs\JobConfig.cs"/>
-        <Compile Include="DataContracts\Output\Jobs\JobRestartConfig.cs"/>
+        <Compile Include="DataContracts\Output\Jobs\RestartConfig.cs" />
         <Compile Include="DataContracts\Output\Jobs\JobRestartModes.cs" />
         <Compile Include="DataContracts\Output\Jobs\JobTypes.cs" />
         <Compile Include="DataContracts\Output\Jobs\ProxiesConfig.cs"/>
