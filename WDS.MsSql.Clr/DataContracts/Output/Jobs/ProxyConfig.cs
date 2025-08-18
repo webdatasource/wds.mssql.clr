@@ -86,13 +86,13 @@ public class ProxyConfig : DataContractBase
     public static ProxyConfig Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     private static readonly DataContractSerializer<ProxyConfig> _dataContractSerializer = new DataContractSerializer<ProxyConfig>()
-        .MapValue<string>("Protocol", (proxyConfig, protocol) => proxyConfig.Protocol = protocol)
-        .MapValue<string>("Host", (proxyConfig, host) => proxyConfig.Host = host)
-        .MapValue<int>("Port", (proxyConfig, port) => proxyConfig.Port = port)
-        .MapValue<string>("UserName", (proxyConfig, userName) => proxyConfig.UserName = userName)
-        .MapValue<string>("Password", (proxyConfig, password) => proxyConfig.Password = password)
-        .MapValue<int>("ConnectionsLimit", (proxyConfig, connectionsLimit) => proxyConfig.ConnectionsLimit = connectionsLimit)
-        .MapArray<string>("AvailableHosts", (proxyConfig, availableHosts) => proxyConfig.AvailableHosts = availableHosts);
+        .MapValue<string>(nameof(Protocol), (proxyConfig, protocol) => proxyConfig.Protocol = protocol)
+        .MapValue<string>(nameof(Host), (proxyConfig, host) => proxyConfig.Host = host)
+        .MapValue<int>(nameof(Port), (proxyConfig, port) => proxyConfig.Port = port)
+        .MapValue<string>(nameof(UserName), (proxyConfig, userName) => proxyConfig.UserName = userName)
+        .MapValue<string>(nameof(Password), (proxyConfig, password) => proxyConfig.Password = password)
+        .MapValue<int>(nameof(ConnectionsLimit), (proxyConfig, connectionsLimit) => proxyConfig.ConnectionsLimit = connectionsLimit)
+        .MapArray<string>(nameof(AvailableHosts), (proxyConfig, availableHosts) => proxyConfig.AvailableHosts = availableHosts);
 
     #region MS SQL CLR Required methods and properties
 

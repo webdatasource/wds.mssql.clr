@@ -21,7 +21,7 @@ public class CookiesConfig : DataContractBase
     public static CookiesConfig Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     private static readonly DataContractSerializer<CookiesConfig> _dataContractSerializer = new DataContractSerializer<CookiesConfig>()
-        .MapValue<bool>("UseCookies", (cookiesConfig, useCookies) => cookiesConfig.UseCookies = useCookies);
+        .MapValue<bool>(nameof(UseCookies), (cookiesConfig, useCookies) => cookiesConfig.UseCookies = useCookies);
 
     #region MS SQL CLR Required methods and properties
 

@@ -28,11 +28,11 @@ public class RetryPolicyParams : DataContractBase
     public static RetryPolicyParams Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     private static readonly DataContractSerializer<RetryPolicyParams> _dataContractSerializer = new DataContractSerializer<RetryPolicyParams>()
-        .MapValue<int>("RetryDelayMs", (retryPolicyParams, retryDelayMs) => retryPolicyParams.RetryDelayMs = retryDelayMs)
-        .MapValue<int>("RetriesLimit", (retryPolicyParams, retriesLimit) => retryPolicyParams.RetriesLimit = retriesLimit);
+        .MapValue<int>(nameof(RetryDelayMs), (retryPolicyParams, retryDelayMs) => retryPolicyParams.RetryDelayMs = retryDelayMs)
+        .MapValue<int>(nameof(RetriesLimit), (retryPolicyParams, retriesLimit) => retryPolicyParams.RetriesLimit = retriesLimit);
 
     #region MS SQL CLR Required methods and properties
-    
+
     public static RetryPolicyParams Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

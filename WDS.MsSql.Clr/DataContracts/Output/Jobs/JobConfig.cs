@@ -52,7 +52,7 @@ public class JobConfig : DataContractBase
     /// <summary>
     /// Job restart settings
     /// </summary>
-    public JobRestartConfig JobRestart { get; set; }
+    public RestartConfig Restart { get; set; }
 
     /// <summary>
     /// HTTPS settings
@@ -72,12 +72,17 @@ public class JobConfig : DataContractBase
     /// <summary>
     /// Download errors handling settings
     /// </summary>
-    public DownloadErrorHandlingPolicy DownloadErrorHandlingPolicy { get; set; }
+    public DownloadErrorHandling DownloadErrorHandling { get; set; }
 
     /// <summary>
-    /// Crawlers protection countermeasure settings
+    /// Crawlers' protection countermeasure settings
     /// </summary>
     public CrawlersProtectionBypass CrawlersProtectionBypass { get; set; }
+
+    /// <summary>
+    /// Cross-domain access settings
+    /// </summary>
+    public CrossDomainAccess CrossDomainAccess { get; set; }
 
     /// <summary>
     /// Adds a new start URL
@@ -105,34 +110,22 @@ public class JobConfig : DataContractBase
     /// <exception cref="InvalidDataException"></exception>
     public override void Validate()
     {
-        if(Server is null)
+        if (Server is null)
             throw new NullReferenceException(nameof(Server));
-        
+
         if (StartUrls is null)
             throw new NullReferenceException(nameof(StartUrls));
         if (StartUrls.Length == 0)
             throw new InvalidDataException("StartUrls can't be empty");
 
-        if (Headers is not null)
-            Headers.Validate();
-
-        if (JobRestart is not null)
-            JobRestart.Validate();
-
-        if (Https is not null)
-            Https.Validate();
-
-        if (Cookies is not null)
-            Cookies.Validate();
-
-        if (Proxy is not null)
-            Proxy.Validate();
-
-        if (DownloadErrorHandlingPolicy is not null)
-            DownloadErrorHandlingPolicy.Validate();
-
-        if (CrawlersProtectionBypass is not null)
-            CrawlersProtectionBypass.Validate();
+        Headers?.Validate();
+        Restart?.Validate();
+        Https?.Validate();
+        Cookies?.Validate();
+        Proxy?.Validate();
+        DownloadErrorHandling?.Validate();
+        CrawlersProtectionBypass?.Validate();
+        CrossDomainAccess?.Validate();
     }
 
     /// <summary>
@@ -147,9 +140,9 @@ public class JobConfig : DataContractBase
     }
 
     private static readonly DataContractSerializer<JobConfig> _dataContractSerializer = new DataContractSerializer<JobConfig>()
-        .MapValue<string>("Server", (jobConfig, serverCs) => jobConfig.Server = ServerConfig.Parse(serverCs))
-        .MapArray<string>("StartUrls", (jobConfig, startUrls) => jobConfig.StartUrls = startUrls)
-        .MapValue<string>("JobName", (jobConfig, jobName) => jobConfig.JobName = jobName);
+        .MapValue<string>(nameof(Server), (jobConfig, serverCs) => jobConfig.Server = ServerConfig.Parse(serverCs))
+        .MapArray<string>(nameof(StartUrls), (jobConfig, startUrls) => jobConfig.StartUrls = startUrls)
+        .MapValue<string>(nameof(JobName), (jobConfig, jobName) => jobConfig.JobName = jobName);
 
     #region MS SQL CLR Required methods and properties
 
@@ -164,11 +157,11 @@ public class JobConfig : DataContractBase
         StartUrls = r.ReadNullableStringArray();
         Type = r.ReadNullableEnum<JobTypes>();
         Headers = r.ReadNullable<HeadersConfig>();
-        JobRestart = r.ReadNullable<JobRestartConfig>();
+        Restart = r.ReadNullable<RestartConfig>();
         Https = r.ReadNullable<HttpsConfig>();
         Cookies = r.ReadNullable<CookiesConfig>();
         Proxy = r.ReadNullable<ProxiesConfig>();
-        DownloadErrorHandlingPolicy = r.ReadNullable<DownloadErrorHandlingPolicy>();
+        DownloadErrorHandling = r.ReadNullable<DownloadErrorHandling>();
         CrawlersProtectionBypass = r.ReadNullable<CrawlersProtectionBypass>();
     }
 
@@ -179,11 +172,11 @@ public class JobConfig : DataContractBase
         w.WriteNullable(StartUrls);
         w.WriteNullableEnum(Type);
         w.WriteNullable(Headers);
-        w.WriteNullable(JobRestart);
+        w.WriteNullable(Restart);
         w.WriteNullable(Https);
         w.WriteNullable(Cookies);
         w.WriteNullable(Proxy);
-        w.WriteNullable(DownloadErrorHandlingPolicy);
+        w.WriteNullable(DownloadErrorHandling);
         w.WriteNullable(CrawlersProtectionBypass);
     }
 

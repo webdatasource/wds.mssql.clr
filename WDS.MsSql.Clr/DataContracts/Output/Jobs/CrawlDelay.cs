@@ -51,8 +51,8 @@ public class CrawlDelay : DataContractBase
     public static CrawlDelay Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     private static readonly DataContractSerializer<CrawlDelay> _dataContractSerializer = new DataContractSerializer<CrawlDelay>()
-        .MapValue<string>("Host", (crawlDelay, host) => crawlDelay.Host = host)
-        .MapValue<string>("Delay", (crawlDelay, delay) => crawlDelay.Delay = delay);
+        .MapValue<string>(nameof(Host), (crawlDelay, host) => crawlDelay.Host = host)
+        .MapValue<string>(nameof(Delay), (crawlDelay, delay) => crawlDelay.Delay = delay);
 
     #region MS SQL CLR Required methods and properties
 

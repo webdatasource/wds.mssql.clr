@@ -21,7 +21,7 @@ public class HttpsConfig : DataContractBase
     public static HttpsConfig Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     private static readonly DataContractSerializer<HttpsConfig> _dataContractSerializer = new DataContractSerializer<HttpsConfig>()
-        .MapValue<bool>("SuppressHttpsCertificateValidation", (httpsConfig, suppressHttpsCertificateValidation) => httpsConfig.SuppressHttpsCertificateValidation = suppressHttpsCertificateValidation);
+        .MapValue<bool>(nameof(SuppressHttpsCertificateValidation), (httpsConfig, suppressHttpsCertificateValidation) => httpsConfig.SuppressHttpsCertificateValidation = suppressHttpsCertificateValidation);
 
     #region MS SQL CLR Required methods and properties
     

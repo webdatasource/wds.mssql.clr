@@ -9,7 +9,7 @@ using WDS.MsSql.Clr.Serialization.DataContracts;
 /// Download error handling policy
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
-public class DownloadErrorHandlingPolicy : DataContractBase
+public class DownloadErrorHandling : DataContractBase
 {
     /// <summary>
     /// Enum filed wrapper for Policy
@@ -35,14 +35,14 @@ public class DownloadErrorHandlingPolicy : DataContractBase
     /// Creates a new instance and fills out it from a config string of the following format 'ErrorHandlingPolicy: <see cref="DownloadErrorHandlingPolicies">Possible values</see>'
     /// </summary>
     /// <param name="s">Config string</param>
-    public static DownloadErrorHandlingPolicy Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
+    public static DownloadErrorHandling Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
-    private static readonly DataContractSerializer<DownloadErrorHandlingPolicy> _dataContractSerializer = new DataContractSerializer<DownloadErrorHandlingPolicy>()
-        .MapValue<string>("ErrorHandlingPolicy", (downloadErrorHandlingPolicy, errorHandlingPolicy) => downloadErrorHandlingPolicy.ErrorHandlingPolicy = errorHandlingPolicy);
+    private static readonly DataContractSerializer<DownloadErrorHandling> _dataContractSerializer = new DataContractSerializer<DownloadErrorHandling>()
+        .MapValue<string>(nameof(ErrorHandlingPolicy), (downloadErrorHandlingPolicy, errorHandlingPolicy) => downloadErrorHandlingPolicy.ErrorHandlingPolicy = errorHandlingPolicy);
 
     #region MS SQL CLR Required methods and properties
 
-    public static DownloadErrorHandlingPolicy Null { get; } = new() { IsNull = true };
+    public static DownloadErrorHandling Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);
 

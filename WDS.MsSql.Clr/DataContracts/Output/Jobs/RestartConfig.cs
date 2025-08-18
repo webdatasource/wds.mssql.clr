@@ -8,45 +8,45 @@ using WDS.MsSql.Clr.Serialization.DataContracts;
 /// Defines what to do if a failed or completed job is restarted.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
-public class JobRestartConfig : DataContractBase
+public class RestartConfig : DataContractBase
 {
     /// <summary>
-    /// Enum filed wrapper for RestartMode
+    /// String wrapper for JobRestartMode
     /// </summary>
-    public string JobRestartMode
+    public string RestartMode
     {
-        get => RestartMode.ToString();
-        set => RestartMode = value.ParseEnum<JobRestartModes>();
+        get => JobRestartMode.ToString();
+        set => JobRestartMode = value.ParseEnum<JobRestartModes>();
     }
     
     /// <summary>
     /// Job restart mode. <see cref="JobRestartModes"/>
     /// </summary>
-    public JobRestartModes RestartMode { get; set; }
+    public JobRestartModes JobRestartMode { get; set; }
 
     /// <summary>
     /// Creates a new instance and fills out it from a config string of the following format 'JobRestartMode: <see cref="JobRestartModes">Possible values</see>'
     /// </summary>
     /// <param name="s">Config string</param>
-    public static JobRestartConfig Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
+    public static RestartConfig Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
-    private static readonly DataContractSerializer<JobRestartConfig> _dataContractSerializer = new DataContractSerializer<JobRestartConfig>()
-        .MapValue<string>("JobRestartMode", (jobRestartConfig, jobRestartMode) => jobRestartConfig.JobRestartMode = jobRestartMode);
+    private static readonly DataContractSerializer<RestartConfig> _dataContractSerializer = new DataContractSerializer<RestartConfig>()
+        .MapValue<string>(nameof(RestartMode), (jobRestartConfig, jobRestartMode) => jobRestartConfig.RestartMode = jobRestartMode);
 
     #region MS SQL CLR Required methods and properties
 
-    public static JobRestartConfig Null { get; } = new() { IsNull = true };
+    public static RestartConfig Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);
 
     protected override void BinaryRead(BinaryReader r)
     {
-        RestartMode = r.ReadEnum<JobRestartModes>();
+        JobRestartMode = r.ReadEnum<JobRestartModes>();
     }
 
     protected override void BinaryWrite(BinaryWriter w)
     {
-        w.WriteEnum(RestartMode);
+        w.WriteEnum(JobRestartMode);
     }
 
     #endregion
