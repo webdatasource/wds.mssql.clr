@@ -28,13 +28,6 @@ namespace WDS.MsSql.Clr.Serialization.DataContracts
             return this;
         }
 
-        public DataContractSerializer<TRes> MapEnum<TEnum>(string propName, Action<TRes, TEnum> assignProp)
-            where TEnum : struct
-        {
-            AddMapping(propName, new DataContractPropAssignEnum<TRes, TEnum>(assignProp));
-            return this;
-        }
-
         public string Serialize(object instance)
         {
             var stringBuilder = new StringBuilder();

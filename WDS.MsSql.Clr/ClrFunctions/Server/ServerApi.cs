@@ -34,18 +34,20 @@ namespace WDS.MsSql.Clr.Server
             while (true)
             {
                 var response = (HttpWebResponse)request.GetResponse();
-                if (response.StatusCode == HttpStatusCode.Accepted) // Waiting for a result
-                    continue;
-                if (response.StatusCode == HttpStatusCode.InternalServerError && retries-- > 0) // Retrying on an internal service error
-                    continue;
-                if (response.StatusCode == HttpStatusCode.OK)
+                switch (response.StatusCode)
                 {
-                    error = null;
-                    return response;
+                    // Waiting for a result
+                    case HttpStatusCode.Accepted:
+                    // Retrying on an internal service error
+                    case HttpStatusCode.InternalServerError when retries-- > 0:
+                        continue;
+                    case HttpStatusCode.OK:
+                        error = null;
+                        return response;
+                    default:
+                        error = BuildApiRequestError(response.StatusCode, GetResponseString(response));
+                        return null;
                 }
-
-                error = BuildApiRequestError(response.StatusCode, GetResponseString(response));
-                return null;
             }
         }
 

@@ -23,7 +23,7 @@ public static partial class ClrFunctions
         TableDefinition = "Task wds.DownloadTask")]
     public static IEnumerable Start(JobConfig jobConfig)
     {
-        var uri = BuildUri(jobConfig.Server.Uri, "/api/v1/jobs/start");
+        var uri = BuildUri(jobConfig.Server.Uri, $"/api/mssql/{API_VERSION}/jobs/{jobConfig.JobName}/start");
         if (ServerApiXml.TryPost<DownloadTask[]>(uri, jobConfig.ToString(), _downloadTaskArraySerializer, out var tasks, out var error))
             return BuildTasks(tasks, jobConfig.Server);
         return new[]
@@ -54,11 +54,11 @@ public static partial class ClrFunctions
     {
         if (downloadTask is null)
             return Array.Empty<DownloadTask>();
-        
+
         if (downloadTask.Error is not null)
             return new[] { downloadTask };
-        
-        var uri = BuildUri(downloadTask.Server.Uri, $"/api/v1/tasks/{downloadTask.Id}/crawl", selector, attributeName);
+
+        var uri = BuildUri(downloadTask.Server.Uri, $"/api/mssql/{API_VERSION}/tasks/{downloadTask.Id}/crawl", selector, attributeName);
         if (ServerApiXml.TryGet<DownloadTask[]>(uri, _downloadTaskArraySerializer, out var tasks, out var error))
             return BuildTasks(tasks, downloadTask.Server);
         return new[]

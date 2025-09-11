@@ -18,7 +18,7 @@ namespace WDS.MsSql.Clr.Tests
             var startUrls = new[] { "http://start1.url/", "http://start2.url/" };
 
             var jobConfig = JobConfig.Parse($"Server: {serverConnectionString}; StartUrls: {string.Join(", ", startUrls)}");
-            Assert.AreEqual(serverUrl, jobConfig.Server.Url);
+            Assert.AreEqual(serverUrl, jobConfig.Server.Uri.ToString());
             Assert.AreEqual(startUrls.Length, jobConfig.StartUrls.Intersect(startUrls).Count());
             var xml = jobConfig.ToString();
 

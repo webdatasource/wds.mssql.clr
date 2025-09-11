@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr.Server;
@@ -52,7 +51,7 @@ public static partial class ClrFunctions
         TableDefinition = "Name NVARCHAR(255), Value NVARCHAR(MAX), Description NVARCHAR(MAX)")]
     public static IEnumerable ServerStatus(ServerConfig serverConfig)
     {
-        var uri = BuildUri(serverConfig.Uri, "/ready");
+        var uri = BuildUri(serverConfig.Uri, $"/api/mssql/{API_VERSION}/status/ready");
         var isReady = ServerApiTxt.TryGet(uri, out var responseString, out var error);
         var statusResultRows = new List<StatusResultRow>
         {
@@ -83,7 +82,7 @@ public static partial class ClrFunctions
                 Error = downloadTask.Error
             };
         
-        var uri = BuildUri(downloadTask.Server.Uri, $"/api/v1/tasks/{downloadTask.Id}/info");
+        var uri = BuildUri(downloadTask.Server.Uri, $"/api/mssql/{API_VERSION}/tasks/{downloadTask.Id}/info");
         if (ServerApiXml.TryGet<DownloadTaskStatus>(uri, _downloadTaskStatusSerializer, out var downloadTaskStatus, out var error))
             return downloadTaskStatus;
         return new DownloadTaskStatus

@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IO;
-using System.Text;
 using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
-using WDS.MsSql.Clr.Serialization;
-using WDS.MsSql.Clr.Server;
 
 /// <summary>
 /// Data contract base for request objects. Those objects might be null
