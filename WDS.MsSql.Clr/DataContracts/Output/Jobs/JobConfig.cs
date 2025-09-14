@@ -32,6 +32,7 @@ public class JobConfig : DataContractBase
     /// <summary>
     /// Job name (if not set a random value is used each run)
     /// </summary>
+    [XmlIgnore]
     public string JobName { get; set; }
 
     /// <summary>

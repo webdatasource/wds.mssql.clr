@@ -6,6 +6,28 @@ namespace WDS.MsSql.Clr.Tests
     public class DataContractsTests
     {
         [Test]
+        public void ServerConfigParseTest()
+        {
+            var serverConnectionString = "wds://localhost:2807";
+            var serverUrl = "http://localhost:2807/";
+
+            var serverConfig = ServerConfig.Parse(serverConnectionString);
+            Assert.AreEqual(serverUrl, serverConfig.Uri.ToString());
+
+            serverConnectionString = "wds://localhost:2807/path";
+            serverUrl = "http://localhost:2807/path";
+
+            serverConfig = ServerConfig.Parse(serverConnectionString);
+            Assert.AreEqual(serverUrl, serverConfig.Uri.ToString());
+            
+            serverConnectionString = "wds://localhost/path";
+            serverUrl = "http://localhost/path";
+
+            serverConfig = ServerConfig.Parse(serverConnectionString);
+            Assert.AreEqual(serverUrl, serverConfig.Uri.ToString());
+        }
+
+        [Test]
         public void JobConfigParseTest()
         {
             const string serverConnectionString = "wds://local.host:2807";
@@ -17,7 +39,7 @@ namespace WDS.MsSql.Clr.Tests
 
             var jobConfig = JobConfig.Parse($"JobName: {jobName}; Server: {serverConnectionString}; StartUrls: {startUrl1}, {startUrl2}");
             Assert.AreEqual(jobName, jobConfig.JobName);
-            Assert.AreEqual(serverUrl, jobConfig.Server.Url);
+            Assert.AreEqual(serverUrl, jobConfig.Server.Uri.ToString());
             Assert.AreEqual(startUrl1, jobConfig.StartUrls[0]);
             Assert.AreEqual(startUrl2, jobConfig.StartUrls[1]);
 
@@ -62,10 +84,10 @@ namespace WDS.MsSql.Clr.Tests
         public void JobRestartConfigParseTest([Values] JobRestartModes mode)
         {
             var jobRestartConfig = RestartConfig.Parse(string.Empty);
-            Assert.AreEqual(JobRestartModes.Continue, jobRestartConfig.RestartMode);
+            Assert.AreEqual(JobRestartModes.Continue, jobRestartConfig.JobRestartMode);
 
-            jobRestartConfig = RestartConfig.Parse($"JobRestartMode: {mode}");
-            Assert.AreEqual(mode, jobRestartConfig.RestartMode);
+            jobRestartConfig = RestartConfig.Parse($"RestartMode: {mode}");
+            Assert.AreEqual(mode, jobRestartConfig.JobRestartMode);
         }
 
         [Test]
@@ -163,11 +185,10 @@ namespace WDS.MsSql.Clr.Tests
                 downloadErrorHandlingPolicy.RetryPolicyParams = RetryPolicyParams.Parse($"RetryDelayMs: {retryDelayMs}; RetriesLimit: {retriesLimit}");
 
             Assert.AreEqual(policy, downloadErrorHandlingPolicy.Policy);
-            if (policy == DownloadErrorHandlingPolicies.Retry)
-            {
-                Assert.AreEqual(retryDelayMs, downloadErrorHandlingPolicy.RetryPolicyParams.RetryDelayMs);
-                Assert.AreEqual(retriesLimit, downloadErrorHandlingPolicy.RetryPolicyParams.RetriesLimit);
-            }
+            if (policy != DownloadErrorHandlingPolicies.Retry) 
+                return;
+            Assert.AreEqual(retryDelayMs, downloadErrorHandlingPolicy.RetryPolicyParams.RetryDelayMs);
+            Assert.AreEqual(retriesLimit, downloadErrorHandlingPolicy.RetryPolicyParams.RetriesLimit);
         }
 
         [Test]

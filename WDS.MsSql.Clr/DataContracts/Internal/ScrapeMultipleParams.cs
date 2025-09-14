@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
+using WDS.MsSql.Clr;
 using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Server;
 
@@ -75,7 +76,7 @@ public class ScrapeMultipleParams : ResponseDataContractBase
     {
         if (_downloadTask is null)
             return Array.Empty<string>();
-        
+
         if (_downloadTask.Error is not null)
             return new[] { _downloadTask.Error };
 
@@ -84,7 +85,7 @@ public class ScrapeMultipleParams : ResponseDataContractBase
 
         if (_scrapeResults is null)
         {
-            var uri = new Uri(_downloadTask.Server.Uri, BuildScrapeMultipleRelativeUrl());
+            var uri = new Uri(_downloadTask.Server.Uri.Append(BuildScrapeMultipleRelativeUrl()).ToString());
             if (!ServerApiXml.TryGet(uri, _scrapeResultArraySerializer, out _scrapeResults, out var error))
             {
                 Error = error;
@@ -102,7 +103,7 @@ public class ScrapeMultipleParams : ResponseDataContractBase
     private string BuildScrapeMultipleRelativeUrl()
     {
         const string name = "scrapeParams";
-        var urlBuilder = new StringBuilder($"/api/v1/tasks/{_downloadTask.Id}/scrape-multiple?");
+        var urlBuilder = new StringBuilder($"/api/mssql/{ClrFunctions.API_VERSION}/tasks/{_downloadTask.Id}/scrape-multiple?");
         var index = 0;
         foreach (var param in _scrapeParams)
         {
@@ -134,9 +135,10 @@ public class ScrapeMultipleParams : ResponseDataContractBase
         foreach (var scrapeParam in _scrapeParams)
             scrapeParam.Validate();
 
-        if (_scrapeResults is not null)
-            foreach (var scrapeResult in _scrapeResults)
-                scrapeResult.Validate();
+        if (_scrapeResults is null) 
+            return;
+        foreach (var scrapeResult in _scrapeResults)
+            scrapeResult.Validate();
     }
 
     #region MS SQL CLR Required methods and properties

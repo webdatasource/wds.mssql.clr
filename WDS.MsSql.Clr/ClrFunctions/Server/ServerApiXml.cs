@@ -8,15 +8,15 @@ namespace WDS.MsSql.Clr.Server
     {
         private const string _contentType = "application/xml";
 
-        public static bool TryGet<T>(Uri uri,  XmlSerializer serializer, out T response, out string error)
-            where T : class
+        public static bool TryGet<TResponse>(Uri uri, XmlSerializer serializer, out TResponse response, out string error)
+            where TResponse : class
         {
             var request = BuildRequest(uri, WebRequestMethods.Http.Get, _contentType);
             return TryRequest(request, serializer, out response, out error);
         }
 
-        public static bool TryPost<T>(Uri uri, string reqData, XmlSerializer serializer, out T response, out string error)
-            where T : class
+        public static bool TryPost<TResponse>(Uri uri, string reqData, XmlSerializer serializer, out TResponse response, out string error)
+            where TResponse : class
         {
             var request = BuildRequest(uri, WebRequestMethods.Http.Post, _contentType, reqData);
             return TryRequest(request, serializer, out response, out error);
@@ -41,7 +41,7 @@ namespace WDS.MsSql.Clr.Server
             catch (WebException e)
             {
                 response = null;
-                ServerApi.HandleWebException(e, out error);
+                HandleWebException(e, out error);
                 return false;
             }
         }

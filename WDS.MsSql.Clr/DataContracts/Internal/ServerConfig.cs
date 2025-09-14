@@ -2,7 +2,6 @@ using System;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
@@ -13,25 +12,11 @@ using WDS.MsSql.Clr.Serialization.DataContracts;
 public class ServerConfig : DataContractBase
 {
     private Uri _uri;
-    private string _url;
-    
+
     /// <summary>
     /// API server Uri
     /// </summary>
     public Uri Uri => _uri;
-
-    /// <summary>
-    /// API server URL
-    /// </summary>
-    public string Url
-    {
-        get => _url;
-        set
-        {
-            _url = value;
-            _uri = new Uri(value);
-        }
-    }
 
     /// <summary>
     /// Validates required fields
@@ -40,11 +25,8 @@ public class ServerConfig : DataContractBase
     /// <exception cref="InvalidDataException"></exception>
     public override void Validate()
     {
-        if (Url is null)
-            throw new NullReferenceException(nameof(Url));
-
-        if (!Uri.TryCreate(Url, UriKind.Absolute, out _))
-            throw new InvalidDataException($"Invalid {nameof(Url)} value: {Url}. It should be a valid absolute URL");
+        if (Uri is null)
+            throw new NullReferenceException(nameof(Uri));
     }
 
     /// <summary>
@@ -56,7 +38,7 @@ public class ServerConfig : DataContractBase
             throw new ArgumentException("Invalid URL");
 
         if (connectionString.Scheme.ToLower() != "wds")
-            throw new ArgumentException("Invalid scheme. Expected 'wds' scheme");
+            throw new ArgumentException("Invalid scheme. Expected scheme: wds");
 
         //var userInfo = connectionString.UserInfo.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -71,9 +53,13 @@ public class ServerConfig : DataContractBase
         if (prms.TryGetValue("https", out var https) && https.ToLower() == "true")
             scheme = "https";
 
+        var uriBuilder = new UriBuilder(scheme, connectionString.Host, connectionString.Port)
+        {
+            Path = connectionString.AbsolutePath
+        };
         var serverConfig = new ServerConfig
         {
-            Url = new UriBuilder(scheme, connectionString.Host, connectionString.Port).Uri.AbsoluteUri
+            _uri = uriBuilder.Uri
         };
         return serverConfig;
     }
@@ -88,12 +74,12 @@ public class ServerConfig : DataContractBase
 
     protected override void BinaryRead(BinaryReader r)
     {
-        Url = r.ReadString();
+        _uri = new Uri(r.ReadString());
     }
 
     protected override void BinaryWrite(BinaryWriter w)
     {
-        w.Write(Url);
+        w.Write(_uri.ToString());
     }
 
     #endregion

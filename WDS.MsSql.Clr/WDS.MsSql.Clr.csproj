@@ -86,10 +86,11 @@
         <Compile Include="DataContracts\Output\Jobs\RetryPolicyParams.cs"/>
         <Compile Include="DataContracts\Output\Tasks\ScrapeParams.cs"/>
         <Compile Include="DataContracts\ResponseDataContractBase.cs"/>
-        <Compile Include="Serialization\DataContracts\DataContractSerializer.cs"/>
+        <Compile Include="Extensions.cs" />
         <Compile Include="Serialization\DataContracts\DataContractPropAssignArray.cs"/>
         <Compile Include="Serialization\DataContracts\DataContractPropAssignEnum.cs"/>
         <Compile Include="Serialization\DataContracts\DataContractPropAssignValue.cs"/>
+        <Compile Include="Serialization\DataContracts\DataContractSerializer.cs" />
         <Compile Include="Serialization\DataContracts\IDataContractAssign.cs"/>
         <Compile Include="Serialization\BinarySerializationExtensions.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>

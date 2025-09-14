@@ -14,5 +14,5 @@ public enum CrossDomainAccessPolicies
     /// <summary>
     /// Allows access to any domain (e.g., "example.com", "sub.example.com, another.com")
     /// </summary>
-    CrossDomains = 2,
+    CrossDomains = 2
 }

@@ -69,9 +69,7 @@ namespace WDS.MsSql.Clr.Serialization
         public static string ReadNullableString(this BinaryReader r)
         {
             var isNull = r.ReadBoolean();
-            if (isNull)
-                return null;
-            return r.ReadString();
+            return isNull ? null : r.ReadString();
         }
 
         public static void WriteNullable(this BinaryWriter w, ICollection<string> values)
@@ -94,9 +92,7 @@ namespace WDS.MsSql.Clr.Serialization
         public static string[] ReadNullableStringArray(this BinaryReader r)
         {
             var isNull = r.ReadBoolean();
-            if (isNull)
-                return null;
-            return r.ReadStringArray();
+            return isNull ? null : r.ReadStringArray();
         }
         
         public static string[] ReadStringArray(this BinaryReader r)

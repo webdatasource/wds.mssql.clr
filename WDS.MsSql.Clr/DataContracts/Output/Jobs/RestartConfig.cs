@@ -25,7 +25,7 @@ public class RestartConfig : DataContractBase
     public JobRestartModes JobRestartMode { get; set; }
 
     /// <summary>
-    /// Creates a new instance and fills out it from a config string of the following format 'JobRestartMode: <see cref="JobRestartModes">Possible values</see>'
+    /// Creates a new instance and fills it out from a config string of the following format 'RestartMode: <see cref="RestartMode">Possible values</see>'
     /// </summary>
     /// <param name="s">Config string</param>
     public static RestartConfig Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);

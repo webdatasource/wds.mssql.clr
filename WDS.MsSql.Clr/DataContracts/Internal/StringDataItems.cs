@@ -26,7 +26,7 @@ public class StringDataItems : ResponseDataContractBase
 
     #region MS SQL CLR Required methods and properties
 
-    private static readonly DataContractSerializer<StringDataItems> _dataContractSerializer = new DataContractSerializer<StringDataItems>();
+    private static readonly DataContractSerializer<StringDataItems> _dataContractSerializer = new();
     
     public static StringDataItems Null { get; } = new() { IsNull = true };
 

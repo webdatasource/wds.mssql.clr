@@ -25,10 +25,8 @@ public static partial class ClrFunctions
         if (downloadTask.Error is not null)
             return new[] { downloadTask.Error };
 
-        var uri = BuildUri(downloadTask.Server.Uri, $"/api/v1/tasks/{downloadTask.Id}/scrape", selector, attributeName);
-        if (ServerApiXml.TryGet<string[]>(uri, _stringArraySerializer, out var values, out var error))
-            return values;
-        return new[] { error };
+        var uri = BuildUri(downloadTask.Server.Uri, $"/api/mssql/{API_VERSION}/tasks/{downloadTask.Id}/scrape", selector, attributeName);
+        return ServerApiXml.TryGet<string[]>(uri, _stringArraySerializer, out var values, out var error) ? values : new[] { error };
     }
 
     /// <summary>
