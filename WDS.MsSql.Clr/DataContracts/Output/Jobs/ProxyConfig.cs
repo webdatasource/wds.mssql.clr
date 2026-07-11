@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -56,6 +58,7 @@ public class ProxyConfig : DataContractBase
     /// Adds a new available host
     /// </summary>
     /// <param name="host">Available host</param>
+    // ReSharper disable once UnusedMethodReturnValue.Global
     public ProxyConfig AddAvailableHost(string host)
     {
         if (AvailableHosts is null)
@@ -102,6 +105,7 @@ public class ProxyConfig : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static ProxyConfig Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

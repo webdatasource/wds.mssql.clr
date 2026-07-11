@@ -1,3 +1,5 @@
+// ReSharper disable UnusedMember.Global
+
 using System;
 using System.Collections;
 using System.Data.SqlTypes;

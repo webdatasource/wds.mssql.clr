@@ -1,3 +1,6 @@
+// ReSharper disable CheckNamespace
+// ReSharper disable MemberCanBePrivate.Global
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -97,8 +100,10 @@ public class DownloadInfo : ResponseDataContractBase
 
     private static readonly DataContractSerializer<DownloadInfo> _dataContractSerializer = new();
 
+    // ReSharper disable once UnusedMember.Global
     public static DownloadInfo Null { get; } = new() { IsNull = true };
 
+    // ReSharper disable once UnusedMember.Global
     public static DownloadInfo Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

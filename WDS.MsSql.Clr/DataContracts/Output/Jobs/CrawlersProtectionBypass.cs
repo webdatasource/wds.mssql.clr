@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -30,13 +32,13 @@ public class CrawlersProtectionBypass : DataContractBase
     /// <summary>
     /// Crawl delays for hosts
     /// </summary>
-    public CrawlDelay[] CrawlDelays { get; set; }
+    public CrawlDelay[] CrawlDelays { get; private set; }
 
     /// <summary>
     /// Adds a new crawl delay
     /// </summary>
     /// <param name="crawlDelay">CrawlDelay instance</param>
-    public CrawlersProtectionBypass AddCrawlDelay(CrawlDelay crawlDelay)
+    public void AddCrawlDelay(CrawlDelay crawlDelay)
     {
         if (CrawlDelays is null)
             CrawlDelays = new[] { crawlDelay };
@@ -47,8 +49,6 @@ public class CrawlersProtectionBypass : DataContractBase
             crawlDelays[crawlDelays.Length - 1] = crawlDelay;
             CrawlDelays = crawlDelays;
         }
-
-        return this;
     }
 
     /// <summary>
@@ -56,9 +56,9 @@ public class CrawlersProtectionBypass : DataContractBase
     /// </summary>
     /// <param name="host">Host</param>
     /// <param name="delay">Delay string <see cref="CrawlDelay"/></param>
-    public CrawlersProtectionBypass AddDelay(string host, string delay)
+    public void AddDelay(string host, string delay)
     {
-        return AddCrawlDelay(new CrawlDelay { Host = host, Delay = delay });
+        AddCrawlDelay(new CrawlDelay { Host = host, Delay = delay });
     }
 
 
@@ -76,6 +76,7 @@ public class CrawlersProtectionBypass : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static CrawlersProtectionBypass Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

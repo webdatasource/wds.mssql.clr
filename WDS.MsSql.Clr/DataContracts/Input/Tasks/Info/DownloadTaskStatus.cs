@@ -1,3 +1,7 @@
+// ReSharper disable CheckNamespace
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Global
+
 using System.Data.SqlTypes;
 using System.IO;
 using System.Xml.Serialization;
@@ -37,13 +41,13 @@ public class DownloadTaskStatus : ResponseDataContractBase
     /// </summary>
     public DownloadInfo[] IntermedResults { get; set; }
 
-
     #region MS SQL CLR Required methods and properties
 
     private static readonly DataContractSerializer<DownloadTaskStatus> _dataContractSerializer = new();
 
     public static DownloadTaskStatus Null { get; } = new() { IsNull = true };
 
+    // ReSharper disable once UnusedMember.Global
     public static DownloadTaskStatus Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

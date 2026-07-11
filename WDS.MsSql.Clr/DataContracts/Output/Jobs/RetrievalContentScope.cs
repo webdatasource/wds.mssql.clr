@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -26,6 +28,7 @@ public class RetrievalContentScope : DataContractBase
         .MapValue<string>(nameof(PathPattern), (scope, value) => scope.PathPattern = value)
         .MapValue<string>(nameof(Selector), (scope, value) => scope.Selector = value);
 
+    // ReSharper disable once UnusedMember.Global
     public static RetrievalContentScope Null { get; } = new() { IsNull = true };
 
     public static RetrievalContentScope Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);

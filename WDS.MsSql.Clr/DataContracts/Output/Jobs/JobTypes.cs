@@ -1,3 +1,6 @@
+// ReSharper disable CheckNamespace
+// ReSharper disable UnusedMember.Global
+
 /// <summary>
 /// Job type
 /// </summary>
@@ -7,7 +10,7 @@ public enum JobTypes
     /// Crawl data from internet sources via request gateways (Proxy addresses, Host IP addresses, etc.)
     /// </summary>
     Internet = 0,
-    
+
     /// <summary>
     /// Crawl data from intranet sources with no limits
     /// </summary>

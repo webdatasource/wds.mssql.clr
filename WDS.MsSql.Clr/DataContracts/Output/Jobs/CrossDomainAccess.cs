@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System.Data.SqlTypes;
 using System.IO;
 using System.Xml.Serialization;
@@ -24,12 +26,13 @@ public class CrossDomainAccess : DataContractBase
     /// <summary>
     /// Cross-domain access policy
     /// </summary>
-    public CrossDomainAccessPolicies Policy { get; set; }
+    private CrossDomainAccessPolicies Policy { get; set; }
     
     /// <summary>
     /// Creates a new instance and fills it out from a config string of the following format 'ErrorHandlingPolicy: <see cref="Policy">Possible values</see>'
     /// </summary>
     /// <param name="s">Config string</param>
+    // ReSharper disable once UnusedMember.Global
     public static CrossDomainAccess Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     private static readonly DataContractSerializer<CrossDomainAccess> _dataContractSerializer = new DataContractSerializer<CrossDomainAccess>()
@@ -37,6 +40,7 @@ public class CrossDomainAccess : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static CrossDomainAccess Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

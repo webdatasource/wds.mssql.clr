@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
@@ -28,9 +30,11 @@ public class StringDataItems : ResponseDataContractBase
 
     private static readonly DataContractSerializer<StringDataItems> _dataContractSerializer = new();
     
+    // ReSharper disable once UnusedMember.Global
     public static StringDataItems Null { get; } = new() { IsNull = true };
 
-    public static StringDataItems Parse(SqlString s) => throw new InvalidOperationException("Parse method is not supported");
+    // ReSharper disable once UnusedMember.Global
+    public static StringDataItems Parse(SqlString _) => throw new InvalidOperationException("Parse method is not supported");
 
     public override string ToString() => _dataContractSerializer.Serialize(this);
     

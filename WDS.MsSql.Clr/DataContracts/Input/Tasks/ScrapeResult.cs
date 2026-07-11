@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.IO;
 using WDS.MsSql.Clr.Serialization;

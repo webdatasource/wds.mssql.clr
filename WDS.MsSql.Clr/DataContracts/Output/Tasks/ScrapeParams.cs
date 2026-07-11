@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.IO;
 using Microsoft.SqlServer.Server;

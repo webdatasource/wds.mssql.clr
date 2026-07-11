@@ -1,3 +1,6 @@
+// ReSharper disable CheckNamespace
+// ReSharper disable MemberCanBePrivate.Global
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -60,8 +63,10 @@ public class Cookie : ResponseDataContractBase
 
     private static readonly DataContractSerializer<Cookie> _dataContractSerializer = new();
 
+    // ReSharper disable once UnusedMember.Global
     public static Cookie Null { get; } = new() { IsNull = true };
 
+    // ReSharper disable once UnusedMember.Global
     public static Cookie Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

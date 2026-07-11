@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System.IO;
 using WDS.MsSql.Clr.Serialization;
 
@@ -18,9 +20,9 @@ public abstract class ResponseDataContractBase : DataContractBase
         IsNull = r.ReadBoolean();
         if (IsNull)
             return;
-        
+
         Error = r.ReadNullableString();
-        if (Error is not null) 
+        if (Error is not null)
             return;
         BinaryRead(r);
         Validate();
@@ -31,9 +33,9 @@ public abstract class ResponseDataContractBase : DataContractBase
         w.Write(IsNull);
         if (IsNull)
             return;
-        
+
         w.WriteNullable(Error);
-        if (Error is not null) 
+        if (Error is not null)
             return;
         Validate();
         BinaryWrite(w);

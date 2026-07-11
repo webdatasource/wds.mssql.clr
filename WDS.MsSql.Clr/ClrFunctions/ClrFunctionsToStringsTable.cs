@@ -1,3 +1,6 @@
+// ReSharper disable UnusedMember.Global
+// ReSharper disable once CheckNamespace
+
 using System.Collections;
 using Microsoft.SqlServer.Server;
 

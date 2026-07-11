@@ -5,7 +5,7 @@ namespace WDS.MsSql.Clr.Serialization.DataContracts
     public class DataContractPropAssignArray<TRes, TProp> : IDataContractAssign<TRes>
     {
         private readonly Action<TRes, TProp[]> _assignProp;
-        private static readonly char[] _parseGroupItemValuesSeparator = { ',' };
+        private readonly char[] _parseGroupItemValuesSeparator = { ',' };
 
         public DataContractPropAssignArray(Action<TRes, TProp[]> assignProp)
         {

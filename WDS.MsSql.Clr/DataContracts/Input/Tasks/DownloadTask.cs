@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -53,6 +55,7 @@ public class DownloadTask : ResponseDataContractBase
 
     public static DownloadTask Null { get; } = new() { IsNull = true };
 
+    // ReSharper disable once UnusedMember.Global
     public static DownloadTask Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

@@ -1,3 +1,6 @@
+// ReSharper disable CheckNamespace
+// ReSharper disable UnusedMember.Global
+
 /// <summary>
 /// Download task states
 /// </summary>

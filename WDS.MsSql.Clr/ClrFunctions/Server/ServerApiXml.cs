@@ -6,7 +6,7 @@ using WDS.MsSql.Clr.Serialization;
 
 namespace WDS.MsSql.Clr.Server
 {
-    internal class ServerApiXml : ServerApi
+    internal abstract class ServerApiXml : ServerApi
     {
         private const string _contentType = "application/xml";
 

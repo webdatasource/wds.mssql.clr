@@ -33,6 +33,7 @@ namespace WDS.MsSql.Clr.Server
             while (true)
             {
                 var response = (HttpWebResponse)request.GetResponse();
+                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.Accepted:

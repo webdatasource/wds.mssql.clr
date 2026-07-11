@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System.Data.SqlTypes;
 using System.IO;
 using Microsoft.SqlServer.Server;
@@ -22,7 +24,7 @@ public class RestartConfig : DataContractBase
     /// <summary>
     /// Job restart mode. <see cref="JobRestartModes"/>
     /// </summary>
-    public JobRestartModes JobRestartMode { get; set; }
+    public JobRestartModes JobRestartMode { get; private set; }
 
     /// <summary>
     /// Creates a new instance and fills it out from a config string of the following format 'RestartMode: <see cref="RestartMode">Possible values</see>'
@@ -35,6 +37,7 @@ public class RestartConfig : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static RestartConfig Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

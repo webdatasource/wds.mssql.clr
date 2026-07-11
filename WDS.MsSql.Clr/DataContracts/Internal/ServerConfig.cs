@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -11,12 +13,10 @@ using WDS.MsSql.Clr.Serialization.DataContracts;
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class ServerConfig : DataContractBase
 {
-    private Uri _uri;
-
     /// <summary>
     /// API server Uri
     /// </summary>
-    public Uri Uri => _uri;
+    public Uri Uri { get; private set; }
 
     /// <summary>
     /// Validates required fields
@@ -59,7 +59,7 @@ public class ServerConfig : DataContractBase
         };
         var serverConfig = new ServerConfig
         {
-            _uri = uriBuilder.Uri
+            Uri = uriBuilder.Uri
         };
         return serverConfig;
     }
@@ -68,18 +68,19 @@ public class ServerConfig : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static ServerConfig Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);
 
     protected override void BinaryRead(BinaryReader r)
     {
-        _uri = new Uri(r.ReadString());
+        Uri = new Uri(r.ReadString());
     }
 
     protected override void BinaryWrite(BinaryWriter w)
     {
-        w.Write(_uri.ToString());
+        w.Write(Uri.ToString());
     }
 
     #endregion

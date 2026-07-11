@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -17,7 +19,7 @@ public class RetrievalConfig : DataContractBase
 
     public int? MaxTokensPerChunk { get; set; }
 
-    public RetrievalContentScope[] ContentScopes { get; set; }
+    public RetrievalContentScope[] ContentScopes { get; private set; }
 
     public bool WaitForEnrolled { get; set; }
 
@@ -49,6 +51,7 @@ public class RetrievalConfig : DataContractBase
         .MapValue<int>(nameof(MaxTokensPerChunk), (config, value) => config.MaxTokensPerChunk = value)
         .MapValue<bool>(nameof(WaitForEnrolled), (config, value) => config.WaitForEnrolled = value);
 
+    // ReSharper disable once UnusedMember.Global
     public static RetrievalConfig Null { get; } = new() { IsNull = true };
 
     public static RetrievalConfig Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);

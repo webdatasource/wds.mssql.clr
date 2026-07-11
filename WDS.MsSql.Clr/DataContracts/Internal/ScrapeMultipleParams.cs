@@ -1,3 +1,6 @@
+// ReSharper disable CheckNamespace
+// ReSharper disable UnusedMember.Global
+
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
@@ -39,15 +42,12 @@ public class ScrapeMultipleParams : ResponseDataContractBase
     /// <param name="attributeName">HTML attribute from which to get data. Optional. By default, a tag body text is returned</param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    public ScrapeMultipleParams AddScrapeParams(string name, string selector, string attributeName)
-    {
-        return AddScrapeParamsWithConvert(name, selector, attributeName, null);
-    }
+    public ScrapeMultipleParams AddScrapeParams(string name, string selector, string attributeName) => AddScrapeParamsWithConvert(name, selector, attributeName, null);
 
     /// <summary>
     /// Add a new scrape parameter with an optional conversion
     /// </summary>
-    public ScrapeMultipleParams AddScrapeParamsWithConvert(string name, string selector, string attributeName, string convert)
+    private ScrapeMultipleParams AddScrapeParamsWithConvert(string name, string selector, string attributeName, string convert)
     {
         if (_scrapeResults is not null)
             throw new InvalidOperationException("Method Add can not be used when scrape parameters initialization is completed");
@@ -95,7 +95,7 @@ public class ScrapeMultipleParams : ResponseDataContractBase
         if (_scrapeResults is null)
         {
             var uri = new Uri(_downloadTask.Server.Uri.Append($"/api/mssql/{ClrFunctions.API_VERSION}/tasks/{_downloadTask.Id}/scrape").ToString());
-            if (!ServerApiXml.TryPost<ScrapeParams[], ScrapeResult[]>(uri, _scrapeParams.ToArray(), _scrapeParamsArraySerializer, _scrapeResultArraySerializer, out _scrapeResults, out var error))
+            if (!ServerApiXml.TryPost(uri, _scrapeParams.ToArray(), _scrapeParamsArraySerializer, _scrapeResultArraySerializer, out _scrapeResults, out var error))
             {
                 Error = error;
                 return new[] { Error };
@@ -124,7 +124,7 @@ public class ScrapeMultipleParams : ResponseDataContractBase
         foreach (var scrapeParam in _scrapeParams)
             scrapeParam.Validate();
 
-        if (_scrapeResults is null) 
+        if (_scrapeResults is null)
             return;
         foreach (var scrapeResult in _scrapeResults)
             scrapeResult.Validate();
@@ -132,9 +132,10 @@ public class ScrapeMultipleParams : ResponseDataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static ScrapeMultipleParams Null { get; } = new() { IsNull = true };
 
-    public static ScrapeMultipleParams Parse(SqlString s) => throw new InvalidOperationException("Parse method is not supported");
+    public static ScrapeMultipleParams Parse(SqlString _) => throw new InvalidOperationException("Parse method is not supported");
 
     public override string ToString() => throw new InvalidOperationException("ToString method is not supported");
 

@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -32,7 +34,7 @@ public class ProxiesConfig : DataContractBase
     /// <summary>
     /// Proxy configurations
     /// </summary>
-    public ProxyConfig[] Proxies { get; set; }
+    public ProxyConfig[] Proxies { get; private set; }
 
     /// <summary>
     /// Adds a new proxy configuration
@@ -86,9 +88,10 @@ public class ProxiesConfig : DataContractBase
     /// <exception cref="InvalidDataException"></exception>
     public override void Validate()
     {
-        if (Proxies is not null)
-            foreach (var proxy in Proxies)
-                proxy.Validate();
+        if (Proxies is null)
+            return;
+        foreach (var proxy in Proxies)
+            proxy.Validate();
     }
 
     /// <summary>
@@ -103,7 +106,8 @@ public class ProxiesConfig : DataContractBase
         .MapArray<int>(nameof(IterateProxyResponseCodes), (proxiesConfig, iterateProxyResponseCodes) => proxiesConfig.IterateProxyResponseCodes = string.Join(", ", iterateProxyResponseCodes));
 
     #region MS SQL CLR Required methods and properties
-    
+
+    // ReSharper disable once UnusedMember.Global
     public static ProxiesConfig Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

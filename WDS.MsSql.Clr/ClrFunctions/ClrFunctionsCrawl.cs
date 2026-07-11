@@ -1,5 +1,8 @@
+// ReSharper disable UnusedMember.Global
+
 using System;
 using System.Collections;
+using System.Linq;
 using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr.Server;
@@ -79,18 +82,13 @@ public static partial class ClrFunctions
         };
     }
 
-    private static IEnumerable BuildInitialTasks(string[] taskIds, string[] startUrls, ServerConfig serverConfig)
+    private static IEnumerable BuildInitialTasks(string[] taskIds, string[] startUrls, ServerConfig serverConfig) => taskIds.Select((t, i) => new DownloadTask
     {
-        for (var i = 0; i < taskIds.Length; i++)
-        {
-            yield return new DownloadTask
-            {
-                Id = taskIds[i],
-                Url = startUrls != null && i < startUrls.Length ? startUrls[i] : string.Empty,
-                Server = serverConfig
-            };
-        }
-    }
+        Id = t,
+        Url = startUrls != null && i < startUrls.Length ? startUrls[i] : string.Empty,
+        Server = serverConfig
+    });
+
 
     /// <summary>
     /// Builds download tasks from an XML string

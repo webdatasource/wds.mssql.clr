@@ -1,3 +1,6 @@
+// ReSharper disable CheckNamespace
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>

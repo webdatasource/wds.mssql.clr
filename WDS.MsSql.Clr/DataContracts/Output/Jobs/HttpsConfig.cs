@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System.Data.SqlTypes;
 using System.IO;
 using Microsoft.SqlServer.Server;
@@ -25,6 +27,7 @@ public class HttpsConfig : DataContractBase
 
     #region MS SQL CLR Required methods and properties
     
+    // ReSharper disable once UnusedMember.Global
     public static HttpsConfig Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

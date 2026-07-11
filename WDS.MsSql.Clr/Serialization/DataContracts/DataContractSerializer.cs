@@ -10,7 +10,7 @@ namespace WDS.MsSql.Clr.Serialization.DataContracts
     public class DataContractSerializer<TRes>
         where TRes : class, new()
     {
-        private static readonly char[] _parseGroupsSeparator = { ';' };
+        private readonly char[] _parseGroupsSeparator = { ';' };
 
         private readonly XmlSerializer _xmlSerializer = new(typeof(TRes));
 

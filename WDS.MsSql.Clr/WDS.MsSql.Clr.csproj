@@ -92,7 +92,6 @@
         <Compile Include="DataContracts\ResponseDataContractBase.cs"/>
         <Compile Include="Extensions.cs" />
         <Compile Include="Serialization\DataContracts\DataContractPropAssignArray.cs"/>
-        <Compile Include="Serialization\DataContracts\DataContractPropAssignEnum.cs"/>
         <Compile Include="Serialization\DataContracts\DataContractPropAssignValue.cs"/>
         <Compile Include="Serialization\DataContracts\DataContractSerializer.cs" />
         <Compile Include="Serialization\DataContracts\IDataContractAssign.cs"/>

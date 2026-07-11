@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System.Data.SqlTypes;
 using System.IO;
 using System.Xml.Serialization;
@@ -24,7 +26,7 @@ public class DownloadErrorHandling : DataContractBase
     /// <summary>
     /// Download error handling policy
     /// </summary>
-    public DownloadErrorHandlingPolicies Policy { get; set; }
+    public DownloadErrorHandlingPolicies Policy { get; private set; }
 
     /// <summary>
     /// Retry settings (if not set 0 values are used)
@@ -42,6 +44,7 @@ public class DownloadErrorHandling : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static DownloadErrorHandling Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

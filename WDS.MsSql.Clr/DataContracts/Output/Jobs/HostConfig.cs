@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System.Data.SqlTypes;
 using System.IO;
 using Microsoft.SqlServer.Server;
@@ -15,6 +17,7 @@ public class HostConfig : DataContractBase
     private static readonly DataContractSerializer<HostConfig> _dataContractSerializer = new DataContractSerializer<HostConfig>()
         .MapValue<int>(nameof(ReinitPeriodSec), (config, value) => config.ReinitPeriodSec = value);
 
+    // ReSharper disable once UnusedMember.Global
     public static HostConfig Null { get; } = new() { IsNull = true };
 
     public static HostConfig Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);

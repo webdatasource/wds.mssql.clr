@@ -1,3 +1,7 @@
+// ReSharper disable CheckNamespace
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -23,6 +27,7 @@ public class JobConfig : DataContractBase
     /// Enum filed wrapper for Type
     /// </summary>
     [XmlIgnore]
+    // ReSharper disable once UnusedMember.Global
     public string JobType
     {
         get => Type?.ToString();
@@ -159,6 +164,7 @@ public class JobConfig : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static JobConfig Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);
