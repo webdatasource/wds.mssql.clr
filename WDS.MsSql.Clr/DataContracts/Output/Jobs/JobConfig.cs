@@ -176,9 +176,10 @@ public class JobConfig : DataContractBase
         Proxy = r.ReadNullable<ProxiesConfig>();
         DownloadErrorHandling = r.ReadNullable<DownloadErrorHandling>();
         CrawlersProtectionBypass = r.ReadNullable<CrawlersProtectionBypass>();
-        CrossDomainAccess = r.ReadNullable<CrossDomainAccess>();
-        Retrieval = r.ReadNullable<RetrievalConfig>();
-        Host = r.ReadNullable<HostConfig>();
+        // Added in V3
+        CrossDomainAccess = r.TryReadNullable<CrossDomainAccess>(null);
+        Retrieval = r.TryReadNullable<RetrievalConfig>(null);
+        Host = r.TryReadNullable<HostConfig>(null);
     }
 
     protected override void BinaryWrite(BinaryWriter w)

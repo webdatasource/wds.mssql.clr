@@ -13,19 +13,22 @@ public class ScrapeParams : DataContractBase
     /// Scrape parameter name
     /// </summary>
     public string Name { get; set; }
+
     /// <summary>
     /// Scrape selector
     /// </summary>
     public string Selector { get; set; }
+
     /// <summary>
     /// HTML attribute from which to get data. Optional. By default, a tag body text is returned
     /// </summary>
     public string AttributeName { get; set; }
+
     /// <summary>
     /// Optional conversion to apply to scraped values
     /// </summary>
     public string Convert { get; set; }
-    
+
     /// <summary>
     /// Validates required fields
     /// </summary>
@@ -39,13 +42,14 @@ public class ScrapeParams : DataContractBase
     }
 
     #region MS SQL CLR Required methods and properties
-    
+
     protected override void BinaryRead(BinaryReader r)
     {
         Name = r.ReadString();
         Selector = r.ReadString();
         AttributeName = r.ReadNullableString();
-        Convert = r.ReadNullableString();
+        // Added in V3
+        Convert = r.TryReadNullableString(null);
     }
 
     protected override void BinaryWrite(BinaryWriter w)

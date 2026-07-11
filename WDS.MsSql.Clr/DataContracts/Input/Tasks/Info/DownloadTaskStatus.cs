@@ -50,18 +50,19 @@ public class DownloadTaskStatus : ResponseDataContractBase
 
     protected override void BinaryRead(BinaryReader r)
     {
-        Url = r.ReadString();
         State = r.ReadEnum<DownloadTaskStates>();
         Result = r.ReadNullable<DownloadInfo>();
         IntermedResults = r.ReadArrayNullable<DownloadInfo>();
+        // Added in V3
+        Url = r.TryReadString(string.Empty);
     }
 
     protected override void BinaryWrite(BinaryWriter w)
     {
-        w.Write(Url);
         w.WriteEnum(State);
         w.WriteNullable(Result);
         w.WriteNullable(IntermedResults);
+        w.Write(Url);
     }
 
     #endregion

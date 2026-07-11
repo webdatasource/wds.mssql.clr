@@ -17,13 +17,6 @@ namespace WDS.MsSql.Clr.Server
             return TryRequest(request, serializer, out response, out error);
         }
 
-        public static bool TryPost<TResponse>(Uri uri, string reqData, XmlSerializer serializer, out TResponse response, out string error)
-            where TResponse : class
-        {
-            var request = BuildRequest(uri, WebRequestMethods.Http.Post, _contentType, reqData);
-            return TryRequest(request, serializer, out response, out error);
-        }
-
         public static bool TryPost<TRequest, TResponse>(Uri uri, TRequest reqData, XmlSerializer requestSerializer, XmlSerializer responseSerializer, out TResponse response, out string error)
             where TResponse : class
         {
@@ -31,6 +24,13 @@ namespace WDS.MsSql.Clr.Server
             using (var writer = new XmlStringWriter(stringBuilder, Encoding))
                 requestSerializer.Serialize(writer, reqData);
             return TryPost(uri, stringBuilder.ToString(), responseSerializer, out response, out error);
+        }
+
+        private static bool TryPost<TResponse>(Uri uri, string reqData, XmlSerializer serializer, out TResponse response, out string error)
+            where TResponse : class
+        {
+            var request = BuildRequest(uri, WebRequestMethods.Http.Post, _contentType, reqData);
+            return TryRequest(request, serializer, out response, out error);
         }
 
         private static bool TryRequest<T>(HttpWebRequest request, XmlSerializer serializer, out T response, out string error)

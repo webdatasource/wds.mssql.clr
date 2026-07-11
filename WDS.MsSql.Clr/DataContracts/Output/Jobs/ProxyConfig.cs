@@ -115,7 +115,8 @@ public class ProxyConfig : DataContractBase
         Password = r.ReadNullableString();
         ConnectionsLimit = r.ReadNullableInt();
         AvailableHosts = r.ReadNullableStringArray();
-        RenewalIntervalSec = r.ReadNullableInt();
+        // Added in V3
+        RenewalIntervalSec = r.TryReadNullableInt(null);
     }
 
     protected override void BinaryWrite(BinaryWriter w)

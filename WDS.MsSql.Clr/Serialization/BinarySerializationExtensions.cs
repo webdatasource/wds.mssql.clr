@@ -7,6 +7,8 @@ namespace WDS.MsSql.Clr.Serialization
 {
     internal static class BinarySerializationExtensions
     {
+        private static TValue TryRead<TValue>(this BinaryReader r, TValue defaultValue, Func<TValue> readFunc) => r.BaseStream.Position == r.BaseStream.Length ? defaultValue : readFunc();
+
         #region IBinarySerialize
 
         public static void WriteNullable<TValue>(this BinaryWriter w, TValue value)
@@ -28,6 +30,9 @@ namespace WDS.MsSql.Clr.Serialization
             value.Read(r);
             return value;
         }
+
+        public static TValue TryReadNullable<TValue>(this BinaryReader r, TValue defaultValue)
+            where TValue : class, IBinarySerialize, new() => r.TryRead(defaultValue, r.ReadNullable<TValue>);
 
         public static void WriteNullable<TValue>(this BinaryWriter w, ICollection<TValue> values)
             where TValue : class, IBinarySerialize
@@ -80,7 +85,7 @@ namespace WDS.MsSql.Clr.Serialization
                 return;
             w.Write(values);
         }
-        
+
         public static void Write(this BinaryWriter w, ICollection<string> values)
         {
             w.Write(values.Count);
@@ -94,7 +99,7 @@ namespace WDS.MsSql.Clr.Serialization
             var isNull = r.ReadBoolean();
             return isNull ? null : r.ReadStringArray();
         }
-        
+
         public static string[] ReadStringArray(this BinaryReader r)
         {
             var count = r.ReadInt32();
@@ -103,6 +108,10 @@ namespace WDS.MsSql.Clr.Serialization
                 values[i] = r.ReadNullableString();
             return values;
         }
+
+        public static string TryReadString(this BinaryReader r, string defaultValue) => r.TryRead(defaultValue, r.ReadString);
+        
+        public static string TryReadNullableString(this BinaryReader r, string defaultValue) => r.TryRead(defaultValue, r.ReadNullableString);
 
         #endregion
 
@@ -120,6 +129,8 @@ namespace WDS.MsSql.Clr.Serialization
             var hasValue = r.ReadBoolean();
             return hasValue ? r.ReadInt32() : null;
         }
+
+        public static int? TryReadNullableInt(this BinaryReader r, int? defaultValue) => r.TryRead(defaultValue, r.ReadNullableInt);
 
         #endregion
 
@@ -172,7 +183,7 @@ namespace WDS.MsSql.Clr.Serialization
         {
             return (TEnum)Enum.Parse(typeof(TEnum), r.ReadString());
         }
-        
+
         public static TEnum? ReadNullableEnum<TEnum>(this BinaryReader r)
             where TEnum : struct
         {
