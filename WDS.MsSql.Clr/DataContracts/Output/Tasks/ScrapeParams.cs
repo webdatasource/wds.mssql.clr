@@ -21,6 +21,10 @@ public class ScrapeParams : DataContractBase
     /// HTML attribute from which to get data. Optional. By default, a tag body text is returned
     /// </summary>
     public string AttributeName { get; set; }
+    /// <summary>
+    /// Optional conversion to apply to scraped values
+    /// </summary>
+    public string Convert { get; set; }
     
     /// <summary>
     /// Validates required fields
@@ -41,6 +45,7 @@ public class ScrapeParams : DataContractBase
         Name = r.ReadString();
         Selector = r.ReadString();
         AttributeName = r.ReadNullableString();
+        Convert = r.ReadNullableString();
     }
 
     protected override void BinaryWrite(BinaryWriter w)
@@ -48,6 +53,7 @@ public class ScrapeParams : DataContractBase
         w.Write(Name);
         w.Write(Selector);
         w.WriteNullable(AttributeName);
+        w.WriteNullable(Convert);
     }
 
     #endregion

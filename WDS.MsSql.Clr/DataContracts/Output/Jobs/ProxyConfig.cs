@@ -48,6 +48,11 @@ public class ProxyConfig : DataContractBase
     public string[] AvailableHosts { get; set; }
 
     /// <summary>
+    /// Proxy renewal interval in seconds
+    /// </summary>
+    public int? RenewalIntervalSec { get; set; }
+
+    /// <summary>
     /// Adds a new available host
     /// </summary>
     /// <param name="host">Available host</param>
@@ -92,7 +97,8 @@ public class ProxyConfig : DataContractBase
         .MapValue<string>(nameof(UserName), (proxyConfig, userName) => proxyConfig.UserName = userName)
         .MapValue<string>(nameof(Password), (proxyConfig, password) => proxyConfig.Password = password)
         .MapValue<int>(nameof(ConnectionsLimit), (proxyConfig, connectionsLimit) => proxyConfig.ConnectionsLimit = connectionsLimit)
-        .MapArray<string>(nameof(AvailableHosts), (proxyConfig, availableHosts) => proxyConfig.AvailableHosts = availableHosts);
+        .MapArray<string>(nameof(AvailableHosts), (proxyConfig, availableHosts) => proxyConfig.AvailableHosts = availableHosts)
+        .MapValue<int>(nameof(RenewalIntervalSec), (proxyConfig, renewalIntervalSec) => proxyConfig.RenewalIntervalSec = renewalIntervalSec);
 
     #region MS SQL CLR Required methods and properties
 
@@ -109,6 +115,7 @@ public class ProxyConfig : DataContractBase
         Password = r.ReadNullableString();
         ConnectionsLimit = r.ReadNullableInt();
         AvailableHosts = r.ReadNullableStringArray();
+        RenewalIntervalSec = r.ReadNullableInt();
     }
 
     protected override void BinaryWrite(BinaryWriter w)
@@ -120,6 +127,7 @@ public class ProxyConfig : DataContractBase
         w.WriteNullable(Password);
         w.WriteNullable(ConnectionsLimit);
         w.WriteNullable(AvailableHosts);
+        w.WriteNullable(RenewalIntervalSec);
     }
 
     #endregion

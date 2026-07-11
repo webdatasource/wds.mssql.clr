@@ -30,22 +30,29 @@ namespace WDS.MsSql.Clr.Server
 
         protected static HttpWebResponse TryGetResponse(HttpWebRequest request, out string error)
         {
-            var retries = 10;
             while (true)
             {
                 var response = (HttpWebResponse)request.GetResponse();
                 switch (response.StatusCode)
                 {
-                    // Waiting for a result
                     case HttpStatusCode.Accepted:
-                    // Retrying on an internal service error
-                    case HttpStatusCode.InternalServerError when retries-- > 0:
+                        var location = response.Headers[HttpResponseHeader.Location];
+                        if (string.IsNullOrWhiteSpace(location))
+                        {
+                            error = BuildApiRequestError(response.StatusCode, "The response did not include a polling location", response.Headers);
+                            response.Dispose();
+                            return null;
+                        }
+
+                        var responseUri = response.ResponseUri;
+                        response.Dispose();
+                        request = BuildRequest(new Uri(responseUri, location), WebRequestMethods.Http.Get, request.Accept);
                         continue;
                     case HttpStatusCode.OK:
                         error = null;
                         return response;
                     default:
-                        error = BuildApiRequestError(response.StatusCode, GetResponseString(response));
+                        error = BuildApiRequestError(response.StatusCode, GetResponseString(response), response.Headers);
                         return null;
                 }
             }
@@ -54,9 +61,9 @@ namespace WDS.MsSql.Clr.Server
         protected static void HandleWebException(WebException e, out string error)
         {
             if (e.Response is HttpWebResponse webResp)
-                error = BuildApiRequestError(webResp.StatusCode, GetResponseString(webResp));
+                error = BuildApiRequestError(webResp.StatusCode, GetResponseString(webResp), webResp.Headers);
             else
-                error = BuildApiRequestError(null, e.Message);
+                error = BuildApiRequestError(null, e.Message, null);
         }
 
         protected static string GetResponseString(HttpWebResponse webResp)
@@ -69,11 +76,13 @@ namespace WDS.MsSql.Clr.Server
             return string.IsNullOrWhiteSpace(response) ? string.Empty : response;
         }
 
-        private static string BuildApiRequestError(HttpStatusCode? statusCode, string responseString)
+        private static string BuildApiRequestError(HttpStatusCode? statusCode, string responseString, WebHeaderCollection responseHeaders)
         {
+            var responseTraceId = responseHeaders?["X-Trace-Id"];
+            var traceId = string.IsNullOrWhiteSpace(responseTraceId) ? "<MISSING>" : responseTraceId;
             var statusCodeStr = statusCode is null ? string.Empty : $"{(int)statusCode} ({statusCode}) - ";
             var reasonPhrase = responseString is null ? "<NULL>" : string.IsNullOrWhiteSpace(responseString) ? "<EMPTY>" : responseString;
-            return $"REQUEST ERROR: {statusCodeStr}{reasonPhrase}";
+            return $"REQUEST ERROR: {statusCodeStr}{reasonPhrase}; TraceId: {traceId}";
         }
     }
 }

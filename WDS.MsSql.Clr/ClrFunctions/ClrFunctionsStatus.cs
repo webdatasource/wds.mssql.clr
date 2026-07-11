@@ -4,6 +4,7 @@ using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr.Server;
 
+// ReSharper disable once CheckNamespace
 public static partial class ClrFunctions
 {
     private static readonly XmlSerializer _downloadTaskStatusSerializer = new(typeof(DownloadTaskStatus));
@@ -82,7 +83,7 @@ public static partial class ClrFunctions
                 Error = downloadTask.Error
             };
         
-        var uri = BuildUri(downloadTask.Server.Uri, $"/api/mssql/{API_VERSION}/tasks/{downloadTask.Id}/info");
+        var uri = BuildUri(downloadTask.Server.Uri, $"/api/mssql/{API_VERSION}/tasks/{downloadTask.Id}/download-status");
         if (ServerApiXml.TryGet<DownloadTaskStatus>(uri, _downloadTaskStatusSerializer, out var downloadTaskStatus, out var error))
             return downloadTaskStatus;
         return new DownloadTaskStatus

@@ -85,6 +85,15 @@ CREATE TYPE wds.HttpsConfig
 CREATE TYPE wds.CookiesConfig
     EXTERNAL NAME WdsSqlClrFunctions.CookiesConfig;
 
+CREATE TYPE wds.HostConfig
+    EXTERNAL NAME WdsSqlClrFunctions.HostConfig;
+
+CREATE TYPE wds.RetrievalContentScope
+    EXTERNAL NAME WdsSqlClrFunctions.RetrievalContentScope;
+
+CREATE TYPE wds.RetrievalConfig
+    EXTERNAL NAME WdsSqlClrFunctions.RetrievalConfig;
+
 CREATE TYPE wds.ServerConfig
     EXTERNAL NAME WdsSqlClrFunctions.ServerConfig;
 

@@ -86,6 +86,16 @@ public class JobConfig : DataContractBase
     public CrossDomainAccess CrossDomainAccess { get; set; }
 
     /// <summary>
+    /// Retrieval enrollment settings
+    /// </summary>
+    public RetrievalConfig Retrieval { get; set; }
+
+    /// <summary>
+    /// Host initialization settings
+    /// </summary>
+    public HostConfig Host { get; set; }
+
+    /// <summary>
     /// Adds a new start URL
     /// </summary>
     /// <param name="url">Start Url</param>
@@ -127,6 +137,8 @@ public class JobConfig : DataContractBase
         DownloadErrorHandling?.Validate();
         CrawlersProtectionBypass?.Validate();
         CrossDomainAccess?.Validate();
+        Retrieval?.Validate();
+        Host?.Validate();
     }
 
     /// <summary>
@@ -164,6 +176,9 @@ public class JobConfig : DataContractBase
         Proxy = r.ReadNullable<ProxiesConfig>();
         DownloadErrorHandling = r.ReadNullable<DownloadErrorHandling>();
         CrawlersProtectionBypass = r.ReadNullable<CrawlersProtectionBypass>();
+        CrossDomainAccess = r.ReadNullable<CrossDomainAccess>();
+        Retrieval = r.ReadNullable<RetrievalConfig>();
+        Host = r.ReadNullable<HostConfig>();
     }
 
     protected override void BinaryWrite(BinaryWriter w)
@@ -179,6 +194,9 @@ public class JobConfig : DataContractBase
         w.WriteNullable(Proxy);
         w.WriteNullable(DownloadErrorHandling);
         w.WriteNullable(CrawlersProtectionBypass);
+        w.WriteNullable(CrossDomainAccess);
+        w.WriteNullable(Retrieval);
+        w.WriteNullable(Host);
     }
 
     #endregion

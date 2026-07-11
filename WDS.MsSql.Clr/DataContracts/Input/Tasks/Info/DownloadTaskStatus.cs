@@ -12,6 +12,11 @@ using WDS.MsSql.Clr.Serialization.DataContracts;
 public class DownloadTaskStatus : ResponseDataContractBase
 {
     /// <summary>
+    /// Downloaded URL
+    /// </summary>
+    public string Url { get; set; }
+
+    /// <summary>
     /// Enum filed wrapper for State
     /// </summary>
     [XmlIgnore]
@@ -45,6 +50,7 @@ public class DownloadTaskStatus : ResponseDataContractBase
 
     protected override void BinaryRead(BinaryReader r)
     {
+        Url = r.ReadString();
         State = r.ReadEnum<DownloadTaskStates>();
         Result = r.ReadNullable<DownloadInfo>();
         IntermedResults = r.ReadArrayNullable<DownloadInfo>();
@@ -52,6 +58,7 @@ public class DownloadTaskStatus : ResponseDataContractBase
 
     protected override void BinaryWrite(BinaryWriter w)
     {
+        w.Write(Url);
         w.WriteEnum(State);
         w.WriteNullable(Result);
         w.WriteNullable(IntermedResults);

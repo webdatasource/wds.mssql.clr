@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr;
@@ -17,6 +16,7 @@ using WDS.MsSql.Clr.Server;
 public class ScrapeMultipleParams : ResponseDataContractBase
 {
     private static readonly XmlSerializer _scrapeResultArraySerializer = new(typeof(ScrapeResult[]));
+    private static readonly XmlSerializer _scrapeParamsArraySerializer = new(typeof(ScrapeParams[]));
     private List<ScrapeParams> _scrapeParams = new();
     private DownloadTask _downloadTask;
     private ScrapeResult[] _scrapeResults;
@@ -41,6 +41,14 @@ public class ScrapeMultipleParams : ResponseDataContractBase
     /// <exception cref="InvalidOperationException"></exception>
     public ScrapeMultipleParams AddScrapeParams(string name, string selector, string attributeName)
     {
+        return AddScrapeParamsWithConvert(name, selector, attributeName, null);
+    }
+
+    /// <summary>
+    /// Add a new scrape parameter with an optional conversion
+    /// </summary>
+    public ScrapeMultipleParams AddScrapeParamsWithConvert(string name, string selector, string attributeName, string convert)
+    {
         if (_scrapeResults is not null)
             throw new InvalidOperationException("Method Add can not be used when scrape parameters initialization is completed");
         _scrapeParams ??= new List<ScrapeParams>();
@@ -48,7 +56,8 @@ public class ScrapeMultipleParams : ResponseDataContractBase
         {
             Name = name,
             Selector = selector,
-            AttributeName = attributeName
+            AttributeName = attributeName,
+            Convert = convert
         });
         return this;
     }
@@ -85,8 +94,8 @@ public class ScrapeMultipleParams : ResponseDataContractBase
 
         if (_scrapeResults is null)
         {
-            var uri = new Uri(_downloadTask.Server.Uri.Append(BuildScrapeMultipleRelativeUrl()).ToString());
-            if (!ServerApiXml.TryGet(uri, _scrapeResultArraySerializer, out _scrapeResults, out var error))
+            var uri = new Uri(_downloadTask.Server.Uri.Append($"/api/mssql/{ClrFunctions.API_VERSION}/tasks/{_downloadTask.Id}/scrape").ToString());
+            if (!ServerApiXml.TryPost<ScrapeParams[], ScrapeResult[]>(uri, _scrapeParams.ToArray(), _scrapeParamsArraySerializer, _scrapeResultArraySerializer, out _scrapeResults, out var error))
             {
                 Error = error;
                 return new[] { Error };
@@ -95,26 +104,6 @@ public class ScrapeMultipleParams : ResponseDataContractBase
 
         var scrapeResult = _scrapeResults.SingleOrDefault(r => r.Name == name);
         return scrapeResult is not null ? scrapeResult.Values : new[] { $"ERROR: Scrape parameter not found: {name}" };
-    }
-
-    /// <summary>
-    /// Builds a URL with all scrape parameters
-    /// </summary>
-    private string BuildScrapeMultipleRelativeUrl()
-    {
-        const string name = "scrapeParams";
-        var urlBuilder = new StringBuilder($"/api/mssql/{ClrFunctions.API_VERSION}/tasks/{_downloadTask.Id}/scrape-multiple?");
-        var index = 0;
-        foreach (var param in _scrapeParams)
-        {
-            urlBuilder.Append(name).Append('[').Append(index).Append("].").Append("Name").Append('=').Append(param.Name).Append('&');
-            urlBuilder.Append(name).Append('[').Append(index).Append("].").Append("Selector").Append('=').Append(param.Selector).Append('&');
-            if (param.AttributeName is not null)
-                urlBuilder.Append(name).Append('[').Append(index).Append("].").Append("AttributeName").Append('=').Append(param.AttributeName).Append('&');
-            index++;
-        }
-
-        return urlBuilder.ToString(0, urlBuilder.Length - 1);
     }
 
     /// <summary>

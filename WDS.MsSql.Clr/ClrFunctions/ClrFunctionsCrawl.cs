@@ -4,8 +4,12 @@ using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr.Server;
 
+// ReSharper disable once CheckNamespace
 public static partial class ClrFunctions
 {
+    private static readonly XmlSerializer _jobConfigSerializer = new(typeof(JobConfig));
+    private static readonly XmlSerializer _crawlParamsSerializer = new(typeof(CrawlParams));
+    private static readonly XmlSerializer _stringArraySerializer = new(typeof(string[]));
     private static readonly XmlSerializer _downloadTaskArraySerializer = new(typeof(DownloadTask[]));
 
     /// <summary>
@@ -24,8 +28,8 @@ public static partial class ClrFunctions
     public static IEnumerable Start(JobConfig jobConfig)
     {
         var uri = BuildUri(jobConfig.Server.Uri, $"/api/mssql/{API_VERSION}/jobs/{jobConfig.JobName}/start");
-        if (ServerApiXml.TryPost<DownloadTask[]>(uri, jobConfig.ToString(), _downloadTaskArraySerializer, out var tasks, out var error))
-            return BuildTasks(tasks, jobConfig.Server);
+        if (ServerApiXml.TryPost<JobConfig, string[]>(uri, jobConfig, _jobConfigSerializer, _stringArraySerializer, out var taskIds, out var error))
+            return BuildInitialTasks(taskIds, jobConfig.StartUrls, jobConfig.Server);
         return new[]
         {
             new DownloadTask
@@ -58,8 +62,13 @@ public static partial class ClrFunctions
         if (downloadTask.Error is not null)
             return new[] { downloadTask };
 
-        var uri = BuildUri(downloadTask.Server.Uri, $"/api/mssql/{API_VERSION}/tasks/{downloadTask.Id}/crawl", selector, attributeName);
-        if (ServerApiXml.TryGet<DownloadTask[]>(uri, _downloadTaskArraySerializer, out var tasks, out var error))
+        var uri = BuildUri(downloadTask.Server.Uri, $"/api/mssql/{API_VERSION}/tasks/{downloadTask.Id}/crawl");
+        var crawlParams = new CrawlParams
+        {
+            Selector = selector,
+            AttributeName = attributeName
+        };
+        if (ServerApiXml.TryPost<CrawlParams, DownloadTask[]>(uri, crawlParams, _crawlParamsSerializer, _downloadTaskArraySerializer, out var tasks, out var error))
             return BuildTasks(tasks, downloadTask.Server);
         return new[]
         {
@@ -68,6 +77,19 @@ public static partial class ClrFunctions
                 Error = error
             }
         };
+    }
+
+    private static IEnumerable BuildInitialTasks(string[] taskIds, string[] startUrls, ServerConfig serverConfig)
+    {
+        for (var i = 0; i < taskIds.Length; i++)
+        {
+            yield return new DownloadTask
+            {
+                Id = taskIds[i],
+                Url = startUrls != null && i < startUrls.Length ? startUrls[i] : string.Empty,
+                Server = serverConfig
+            };
+        }
     }
 
     /// <summary>

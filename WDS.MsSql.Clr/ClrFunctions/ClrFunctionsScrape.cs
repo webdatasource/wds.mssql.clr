@@ -6,9 +6,12 @@ using System.Xml.Serialization;
 using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr.Server;
 
+// ReSharper disable once CheckNamespace
 public static partial class ClrFunctions
 {
-    private static readonly XmlSerializer _stringArraySerializer = new(typeof(string[]));
+    private const string _singleScrapeName = "Data";
+    private static readonly XmlSerializer _scrapeParamsArraySerializer = new(typeof(ScrapeParams[]));
+    private static readonly XmlSerializer _scrapeResultArraySerializer = new(typeof(ScrapeResult[]));
 
     /// <summary>
     /// Performs a scrape task on the server side to extract data from a web page
@@ -25,8 +28,19 @@ public static partial class ClrFunctions
         if (downloadTask.Error is not null)
             return new[] { downloadTask.Error };
 
-        var uri = BuildUri(downloadTask.Server.Uri, $"/api/mssql/{API_VERSION}/tasks/{downloadTask.Id}/scrape", selector, attributeName);
-        return ServerApiXml.TryGet<string[]>(uri, _stringArraySerializer, out var values, out var error) ? values : new[] { error };
+        var uri = BuildUri(downloadTask.Server.Uri, $"/api/mssql/{API_VERSION}/tasks/{downloadTask.Id}/scrape");
+        var scrapeParams = new[]
+        {
+            new ScrapeParams
+            {
+                Name = _singleScrapeName,
+                Selector = selector,
+                AttributeName = attributeName
+            }
+        };
+        if (!ServerApiXml.TryPost<ScrapeParams[], ScrapeResult[]>(uri, scrapeParams, _scrapeParamsArraySerializer, _scrapeResultArraySerializer, out var results, out var error))
+            return new[] { error };
+        return results.SingleOrDefault(result => result.Name == _singleScrapeName)?.Values ?? Array.Empty<string>();
     }
 
     /// <summary>

@@ -1,6 +1,7 @@
 using System.Collections;
 using Microsoft.SqlServer.Server;
 
+// ReSharper disable once CheckNamespace
 public static partial class ClrFunctions
 {
     /// <summary>
