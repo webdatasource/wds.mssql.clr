@@ -7,11 +7,14 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Host initialization settings
+/// Configures host lifecycle settings such as robots.txt and cookie refresh cadence.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class HostConfig : DataContractBase
 {
+    /// <summary>
+    /// Optional. Host reinitialization interval in seconds. Reinitialization refreshes robots.txt content and renews cookies. Null uses 604800 seconds (7 days).
+    /// </summary>
     public int? ReinitPeriodSec { get; set; }
 
     private static readonly DataContractSerializer<HostConfig> _dataContractSerializer = new DataContractSerializer<HostConfig>()

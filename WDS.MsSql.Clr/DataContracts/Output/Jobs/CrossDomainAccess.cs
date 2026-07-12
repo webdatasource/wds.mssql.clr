@@ -8,13 +8,13 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Cross-domain access policy
+/// Represents the SQL CLR-side selection of which discovered links may be followed outside the current host. Its policy value is excluded from API XML.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class CrossDomainAccess : DataContractBase
 {
     /// <summary>
-    /// Enum filed wrapper for CrossDomainAccess
+    /// Selects the cross-domain access policy through its SQL-facing string representation. This alias is excluded from API XML.
     /// </summary>
     [XmlIgnore]
     public string AccessPolicy

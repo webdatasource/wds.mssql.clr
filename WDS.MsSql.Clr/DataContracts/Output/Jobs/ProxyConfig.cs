@@ -9,7 +9,7 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Proxy configuration 
+/// Configures one proxy endpoint for download requests.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class ProxyConfig : DataContractBase
@@ -30,27 +30,27 @@ public class ProxyConfig : DataContractBase
     public int Port { get; set; }
 
     /// <summary>
-    /// Proxy username
+    /// Optional. Proxy username.
     /// </summary>
     public string UserName { get; set; }
 
     /// <summary>
-    /// Proxy password
+    /// Optional. Proxy password.
     /// </summary>
     public string Password { get; set; }
 
     /// <summary>
-    /// Proxy connections limit (how many connections can be established through this proxy at one time)
+    /// Optional. Maximum concurrent connections through this proxy. Null applies no connection-count limit.
     /// </summary>
     public int? ConnectionsLimit { get; set; }
 
     /// <summary>
-    /// A list of available hosts that can be accessed through this proxy
+    /// Optional. Lowercase target hosts, or host:port values for non-default ports, that may use this proxy. Null or empty applies no target-host restriction.
     /// </summary>
     public string[] AvailableHosts { get; set; }
 
     /// <summary>
-    /// Proxy renewal interval in seconds
+    /// Optional. Interval in seconds used to cap the wait before this proxy can be selected again for a target host.
     /// </summary>
     public int? RenewalIntervalSec { get; set; }
 

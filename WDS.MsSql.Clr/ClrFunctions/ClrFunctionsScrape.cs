@@ -46,11 +46,11 @@ public static partial class ClrFunctions
     }
 
     /// <summary>
-    /// Scrapes all data elements from a web page by the specified CSS selector
+    /// Extracts every value matching the selector from the supplied task's downloaded page, automatically following pending server-side results.
     /// </summary>
-    /// <param name="downloadTask">Download task</param>
-    /// <param name="selector">Selector of data elements on a web page. Format CSS|XPATH: selector</param>
-    /// <param name="attributeName">HTML attribute name to get data from. Optional. By default, an HTML tag inner text is taken</param>
+    /// <param name="downloadTask">Supplies the download task ID and server connection for the scrape request. A null task produces no values; a task that already contains an error produces that error as a value.</param>
+    /// <param name="selector">Selector used to read matching elements. Use <c>CSS: &lt;selector&gt;</c>, <c>XPATH: &lt;selector&gt;</c>, or <c>*</c> to target the whole page.</param>
+    /// <param name="attributeName">Optional. Attribute read from each matched element. Use <c>val</c>, or pass null or empty, to return inner text.</param>
     /// <returns>A table with one Data column with all the data of the web page elements that match the specified selector in its rows</returns>
     [SqlFunction(
         DataAccess = DataAccessKind.None,
@@ -64,11 +64,11 @@ public static partial class ClrFunctions
 
 
     /// <summary>
-    /// Scrapes first data elements from a web page by the specified CSS selector
+    /// Extracts the first value matching the selector from the supplied task's downloaded page, automatically following pending server-side results.
     /// </summary>
-    /// <param name="downloadTask">Download task</param>
-    /// <param name="selector">Selector of data elements on a web page. Format CSS|XPATH: selector</param>
-    /// <param name="attributeName">HTML attribute name to get data from. Optional. By default, an HTML tag inner text is taken</param>
+    /// <param name="downloadTask">Supplies the download task ID and server connection for the scrape request. A null task produces no values; a task that already contains an error produces that error as a value.</param>
+    /// <param name="selector">Selector used to read matching elements. Use <c>CSS: &lt;selector&gt;</c>, <c>XPATH: &lt;selector&gt;</c>, or <c>*</c> to target the whole page.</param>
+    /// <param name="attributeName">Optional. Attribute read from each matched element. Use <c>val</c>, or pass null or empty, to return inner text.</param>
     /// <returns>Scraped data (string) or null if nothing found</returns>
     [SqlFunction(
         DataAccess = DataAccessKind.None,
@@ -80,9 +80,9 @@ public static partial class ClrFunctions
 
 
     /// <summary>
-    /// A batch approach of scraping data from a page by the specified CSS selectors. <see cref="ScrapeMultipleParams"/>
+    /// Creates a fluent batch-scrape builder bound to a download task. The server request is sent only when the builder retrieves values.
     /// </summary>
-    /// <param name="downloadTask">Download task</param>
+    /// <param name="downloadTask">Supplies the download task used by the later batch request. A null task remains unbound and later retrieval produces no values.</param>
     /// <returns><see cref="ScrapeMultipleParams"/></returns>
     [SqlFunction(
         DataAccess = DataAccessKind.None,

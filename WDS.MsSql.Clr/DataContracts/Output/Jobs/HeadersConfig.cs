@@ -9,13 +9,13 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Default configuration for ALL requests
+/// Configures additional HTTP headers sent with download requests.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class HeadersConfig : DataContractBase
 {
     /// <summary>
-    /// Http headers that will be added to all requests
+    /// Optional. Additional HTTP headers sent with every request for this job. Null or empty sends no additional default headers.
     /// </summary>
     public HttpHeader[] DefaultRequestHeaders { get; private set; }
 

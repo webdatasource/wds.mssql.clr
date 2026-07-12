@@ -10,7 +10,7 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Download task execution status
+/// Reports the current state and request history for a download task.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class DownloadTaskStatus : ResponseDataContractBase
@@ -32,12 +32,12 @@ public class DownloadTaskStatus : ResponseDataContractBase
     public DownloadTaskStates State { get; set; }
 
     /// <summary>
-    /// Download result
+    /// Optional. Final download attempt details, or null when no attempt result is available.
     /// </summary>
     public DownloadInfo Result { get; set; }
 
     /// <summary>
-    /// Intermediate requests download results stack
+    /// Optional. Earlier attempt details such as redirects or proxy retries. Null means no attempt history is available; an empty array means only the final result exists.
     /// </summary>
     public DownloadInfo[] IntermedResults { get; set; }
 

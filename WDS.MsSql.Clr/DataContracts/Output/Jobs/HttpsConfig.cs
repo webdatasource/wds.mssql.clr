@@ -6,13 +6,13 @@ using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Https settings
+/// Configures HTTPS certificate-validation behavior for downloaded resources.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class HttpsConfig : DataContractBase
 {
     /// <summary>
-    /// Defines whether to suppress HTTPS certificate validation of a web resource
+    /// Optional. When true, accept invalid or self-signed HTTPS certificates for downloaded resources. False is the default.
     /// </summary>
     public bool SuppressHttpsCertificateValidation { get; set; }
 

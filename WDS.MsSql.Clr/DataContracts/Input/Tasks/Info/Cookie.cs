@@ -9,7 +9,7 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// <see href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies">Cookie</see>
+/// Represents an HTTP cookie observed during a download request or response.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class Cookie : ResponseDataContractBase
@@ -20,17 +20,17 @@ public class Cookie : ResponseDataContractBase
     public string Name { get; set; }
 
     /// <summary>
-    /// <see href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#attributes">cookie-value</see>
+    /// Optional. Cookie value, or null when absent.
     /// </summary>
     public string Value { get; set; }
 
     /// <summary>
-    /// <see href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#domaindomain-value">Domain</see>
+    /// Optional. Cookie domain attribute, or null when absent.
     /// </summary>
     public string Domain { get; set; }
 
     /// <summary>
-    /// <see href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#pathpath-value">Path</see>
+    /// Optional. Cookie path attribute, or null when absent.
     /// </summary>
     public string Path { get; set; }
 
@@ -45,7 +45,7 @@ public class Cookie : ResponseDataContractBase
     public bool Secure { get; set; }
 
     /// <summary>
-    /// <see href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#expiresdate">Expires</see>
+    /// Optional. Cookie expiration date and time, or null for a session cookie or unknown expiration.
     /// </summary>
     public DateTime? Expires { get; set; }
 

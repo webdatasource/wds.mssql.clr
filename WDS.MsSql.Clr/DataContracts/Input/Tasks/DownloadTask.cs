@@ -9,7 +9,7 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Download task
+/// Represents one page download task created by job start, single-URL fetch, or link crawling.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class DownloadTask : ResponseDataContractBase

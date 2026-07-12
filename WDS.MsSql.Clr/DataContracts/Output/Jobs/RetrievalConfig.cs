@@ -8,19 +8,34 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Retrieval enrollment settings
+/// Configures optional enrollment of downloaded page content into the retrieval index.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class RetrievalConfig : DataContractBase
 {
+    /// <summary>
+    /// Optional. When true, convert successfully downloaded page content to markdown chunks and enroll it for retrieval. False is the default. Cached pages are skipped unless Force is true.
+    /// </summary>
     public bool EnrollInIndex { get; set; }
 
+    /// <summary>
+    /// Optional. When true, enroll cached page content instead of skipping it. Has no effect when EnrollInIndex is false.
+    /// </summary>
     public bool Force { get; set; }
 
+    /// <summary>
+    /// Optional. Maximum tokens per indexed chunk. Null uses 512.
+    /// </summary>
     public int? MaxTokensPerChunk { get; set; }
 
+    /// <summary>
+    /// Optional. Ordered URL-path patterns and selectors for enrolled content. The first matching scope supplies the selector; if none matches, the whole page is enrolled.
+    /// </summary>
     public RetrievalContentScope[] ContentScopes { get; private set; }
 
+    /// <summary>
+    /// Optional. When true, wait up to one minute per page for its snippets to become queryable before continuing. False is the default and returns after submitting enrollment.
+    /// </summary>
     public bool WaitForEnrolled { get; set; }
 
     public RetrievalConfig AddContentScope(RetrievalContentScope contentScope)

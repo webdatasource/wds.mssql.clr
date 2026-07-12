@@ -38,9 +38,9 @@ public static partial class ClrFunctions
     }
 
     /// <summary>
-    /// Returns the server status
+    /// Checks whether the configured server's MSSQL-compatible API dependencies are ready and returns a status row for the check.
     /// </summary>
-    /// <param name="serverConfig">Server config <see cref="ServerConfig"/></param>
+    /// <param name="serverConfig">Supplies the server URI used to call the MSSQL-compatible readiness endpoint.</param>
     /// <returns>A table of status indicators</returns>
     [SqlFunction(
         DataAccess = DataAccessKind.None,
@@ -62,9 +62,9 @@ public static partial class ClrFunctions
     }
 
     /// <summary>
-    /// Returns a status of a download task 
+    /// Reads the supplied task's download state and HTTP attempt history from the MSSQL-compatible API.
     /// </summary>
-    /// <param name="downloadTask">Download task</param>
+    /// <param name="downloadTask">Supplies the download task ID and server connection. A null task returns a null status; a task that already contains an error returns that error without calling the server.</param>
     /// <returns>A task status object <see cref="DownloadTaskStatus"/></returns>
     [SqlFunction(
         DataAccess = DataAccessKind.None,

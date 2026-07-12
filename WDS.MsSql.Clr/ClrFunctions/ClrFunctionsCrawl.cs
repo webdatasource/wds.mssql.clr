@@ -16,9 +16,9 @@ public static partial class ClrFunctions
     private static readonly XmlSerializer _downloadTaskArraySerializer = new(typeof(DownloadTask[]));
 
     /// <summary>
-    /// Starts a new job with the specified configuration
+    /// Starts or restarts the job named in the supplied configuration after applying its crawler settings, then returns its initial download tasks.
     /// </summary>
-    /// <param name="jobConfig">Job configuration</param>
+    /// <param name="jobConfig">Supplies the server connection, job name, start URLs, and crawler settings. Its job name selects the MSSQL-compatible job to configure and start.</param>
     /// <returns>Download tasks array (of the count of the StartUrls list)</returns>
     [SqlFunction(
         DataAccess = DataAccessKind.None,
@@ -43,11 +43,11 @@ public static partial class ClrFunctions
     }
 
     /// <summary>
-    /// Performs a download task to collect subsequent pages of web resources
+    /// Extracts links from the supplied task's downloaded page and creates child download tasks, automatically following pending server-side results.
     /// </summary>
-    /// <param name="downloadTask">Download task</param>
-    /// <param name="selector">Selector of links on a web page. Format CSS|XPATH: selector</param>
-    /// <param name="attributeName">HTML attribute name to get data from. Optional. By default, href</param>
+    /// <param name="downloadTask">Supplies the download task ID and server connection for the crawl request. A null task returns no rows; a task that already contains an error is returned unchanged.</param>
+    /// <param name="selector">Selector used to find link-bearing elements. Use <c>CSS: &lt;selector&gt;</c>, <c>XPATH: &lt;selector&gt;</c>, or <c>*</c> to select all anchor elements.</param>
+    /// <param name="attributeName">Optional. Attribute read from each matched element to obtain a link. Use <c>val</c> for inner text; null or empty uses <c>href</c>.</param>
     /// <returns>Subsequent download tasks array with URLs matched to the selector</returns>
     [SqlFunction(
         DataAccess = DataAccessKind.None,
