@@ -1,10 +1,13 @@
+// ReSharper disable CheckNamespace
+// ReSharper disable UnusedMember.Global
+
 /// <summary>
-/// Download task states
+/// Defines the lifecycle state reported for a download task.
 /// </summary>
 public enum DownloadTaskStates
 {
     /// <summary>
-    /// Task is handled and its results are available
+    /// The downloader finished handling the task. When DownloadTaskStatus.Result is present, inspect IsSuccess and HttpStatusCode to determine request success.
     /// </summary>
     Handled = 0,
     /// <summary>

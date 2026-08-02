@@ -2,24 +2,14 @@ using System;
 using System.Data.SqlTypes;
 using WDS.MsSql.Clr;
 
+// ReSharper disable once CheckNamespace
 public static partial class ClrFunctions
 {
-    public const string API_VERSION = "v2";
+    public const string API_VERSION = "v3";
 
     #region Utils
 
-    private static Uri BuildUri(Uri baseUri, string path, string selector = null, string attributeName = null)
-    {
-        var builder = baseUri.Append(path);
-        if (selector is not null)
-            builder.AppendFormat("?selector={0}", selector);
-        if (attributeName is null)
-            return new Uri(builder.ToString());
-        if (selector is null)
-            throw new InvalidOperationException("Selector must be specified if attributeName is specified");
-        builder.AppendFormat("&attributeName={0}", attributeName);
-        return new Uri(builder.ToString());
-    }
+    private static Uri BuildUri(Uri baseUri, string path) => new(baseUri.Append(path).ToString());
 
     #endregion
 

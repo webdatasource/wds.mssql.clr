@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 /// <summary>
 /// Download error handling policies
 /// </summary>

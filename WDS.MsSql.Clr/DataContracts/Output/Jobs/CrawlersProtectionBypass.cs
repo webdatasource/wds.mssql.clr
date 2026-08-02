@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -7,36 +9,36 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Crawlers protection bypass settings
+/// Configures per-download response, redirect, timeout, and per-host pacing limits.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class CrawlersProtectionBypass : DataContractBase
 {
     /// <summary>
-    /// Max response size in kilobytes. Optional. Default value is 1000
+    /// Optional. Maximum response content buffered for one download, in kilobytes. Null uses 1000 KB.
     /// </summary>
     public int? MaxResponseSizeKb { get; set; }
 
     /// <summary>
-    /// Max redirect hops. Optional. Default value is 10
+    /// Optional. Maximum number of redirects followed for one download. Null uses 10; 0 disables redirects.
     /// </summary>
     public int? MaxRedirectHops { get; set; }
 
     /// <summary>
-    /// Max request timeout in seconds. Optional. Default value is 30
+    /// Optional. Request timeout in seconds. Null uses 30 seconds.
     /// </summary>
     public int? RequestTimeoutSec { get; set; }
 
     /// <summary>
-    /// Crawl delays for hosts
+    /// Optional. Per-host delay overrides. Null or empty uses the robots.txt crawl-delay when available, otherwise no extra delay.
     /// </summary>
-    public CrawlDelay[] CrawlDelays { get; set; }
+    public CrawlDelay[] CrawlDelays { get; private set; }
 
     /// <summary>
     /// Adds a new crawl delay
     /// </summary>
     /// <param name="crawlDelay">CrawlDelay instance</param>
-    public CrawlersProtectionBypass AddCrawlDelay(CrawlDelay crawlDelay)
+    public void AddCrawlDelay(CrawlDelay crawlDelay)
     {
         if (CrawlDelays is null)
             CrawlDelays = new[] { crawlDelay };
@@ -47,8 +49,6 @@ public class CrawlersProtectionBypass : DataContractBase
             crawlDelays[crawlDelays.Length - 1] = crawlDelay;
             CrawlDelays = crawlDelays;
         }
-
-        return this;
     }
 
     /// <summary>
@@ -56,9 +56,9 @@ public class CrawlersProtectionBypass : DataContractBase
     /// </summary>
     /// <param name="host">Host</param>
     /// <param name="delay">Delay string <see cref="CrawlDelay"/></param>
-    public CrawlersProtectionBypass AddDelay(string host, string delay)
+    public void AddDelay(string host, string delay)
     {
-        return AddCrawlDelay(new CrawlDelay { Host = host, Delay = delay });
+        AddCrawlDelay(new CrawlDelay { Host = host, Delay = delay });
     }
 
 
@@ -76,6 +76,7 @@ public class CrawlersProtectionBypass : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static CrawlersProtectionBypass Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

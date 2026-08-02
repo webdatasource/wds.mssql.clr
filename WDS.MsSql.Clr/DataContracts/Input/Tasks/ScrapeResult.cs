@@ -1,14 +1,16 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.IO;
 using WDS.MsSql.Clr.Serialization;
 
 /// <summary>
-/// Scrape result. This class is internal and is not exposed to MS SQL Server
+/// Represents values extracted for one named scrape field.
 /// </summary>
 public class ScrapeResult: ResponseDataContractBase
 {
     /// <summary>
-    /// Scrape parameter name
+    /// Optional. Field name copied from the matching ScrapeParams entry.
     /// </summary>
     public string Name { get; set; }
     /// <summary>

@@ -77,6 +77,7 @@
         <Compile Include="DataContracts\Output\Jobs\DownloadErrorHandling.cs" />
         <Compile Include="DataContracts\Output\Jobs\HeadersConfig.cs"/>
         <Compile Include="DataContracts\Output\Jobs\HttpsConfig.cs"/>
+        <Compile Include="DataContracts\Output\Jobs\HostConfig.cs"/>
         <Compile Include="DataContracts\Output\Jobs\JobConfig.cs"/>
         <Compile Include="DataContracts\Output\Jobs\RestartConfig.cs" />
         <Compile Include="DataContracts\Output\Jobs\JobRestartModes.cs" />
@@ -84,11 +85,13 @@
         <Compile Include="DataContracts\Output\Jobs\ProxiesConfig.cs"/>
         <Compile Include="DataContracts\Output\Jobs\ProxyConfig.cs"/>
         <Compile Include="DataContracts\Output\Jobs\RetryPolicyParams.cs"/>
+        <Compile Include="DataContracts\Output\Jobs\RetrievalConfig.cs"/>
+        <Compile Include="DataContracts\Output\Jobs\RetrievalContentScope.cs"/>
+        <Compile Include="DataContracts\Output\Tasks\CrawlParams.cs" />
         <Compile Include="DataContracts\Output\Tasks\ScrapeParams.cs"/>
         <Compile Include="DataContracts\ResponseDataContractBase.cs"/>
         <Compile Include="Extensions.cs" />
         <Compile Include="Serialization\DataContracts\DataContractPropAssignArray.cs"/>
-        <Compile Include="Serialization\DataContracts\DataContractPropAssignEnum.cs"/>
         <Compile Include="Serialization\DataContracts\DataContractPropAssignValue.cs"/>
         <Compile Include="Serialization\DataContracts\DataContractSerializer.cs" />
         <Compile Include="Serialization\DataContracts\IDataContractAssign.cs"/>

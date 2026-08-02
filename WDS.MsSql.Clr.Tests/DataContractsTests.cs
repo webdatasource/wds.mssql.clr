@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+using System.Reflection;
+using Microsoft.SqlServer.Server;
 using NUnit.Framework;
 
 namespace WDS.MsSql.Clr.Tests
@@ -5,6 +9,26 @@ namespace WDS.MsSql.Clr.Tests
     [TestFixture]
     public class DataContractsTests
     {
+        [Test]
+        public void SqlUserDefinedTypesHaveUniquePublicMemberNames()
+        {
+            var sqlUserDefinedTypes = typeof(JobConfig).Assembly.GetTypes()
+                .Where(type => type.GetCustomAttributes(typeof(SqlUserDefinedTypeAttribute), false).Any());
+
+            foreach (var sqlUserDefinedType in sqlUserDefinedTypes)
+            {
+                var duplicateMemberNames = sqlUserDefinedType
+                    .GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly)
+                    .Where(member => member.MemberType == MemberTypes.Method || member.MemberType == MemberTypes.Property || member.MemberType == MemberTypes.Field)
+                    .GroupBy(member => member.Name, StringComparer.OrdinalIgnoreCase)
+                    .Where(group => group.Count() > 1)
+                    .Select(group => group.Key)
+                    .ToArray();
+
+                Assert.That(duplicateMemberNames, Is.Empty, $"SQL CLR UDT '{sqlUserDefinedType.FullName}' contains overloaded public members: {string.Join(", ", duplicateMemberNames)}");
+            }
+        }
+
         [Test]
         public void ServerConfigParseTest()
         {
@@ -222,6 +246,23 @@ namespace WDS.MsSql.Clr.Tests
             Assert.AreEqual(crawlDelayDelay1, crawlersProtectionBypass.CrawlDelays[0].Delay);
             Assert.AreEqual(crawlDelayHost2, crawlersProtectionBypass.CrawlDelays[1].Host);
             Assert.AreEqual(crawlDelayDelay2, crawlersProtectionBypass.CrawlDelays[1].Delay);
+        }
+
+        [Test]
+        public void NewJobConfigContractsParseTest()
+        {
+            var host = HostConfig.Parse("ReinitPeriodSec: 60");
+            Assert.AreEqual(60, host.ReinitPeriodSec);
+
+            var scope = RetrievalContentScope.Parse("PathPattern: /docs/*; Selector: CSS: main");
+            var retrieval = RetrievalConfig.Parse("EnrollInIndex: true; Force: true; MaxTokensPerChunk: 512; WaitForEnrolled: true")
+                .AddContentScope(scope);
+
+            Assert.IsTrue(retrieval.EnrollInIndex);
+            Assert.IsTrue(retrieval.Force);
+            Assert.AreEqual(512, retrieval.MaxTokensPerChunk);
+            Assert.IsTrue(retrieval.WaitForEnrolled);
+            Assert.AreEqual(scope, retrieval.ContentScopes[0]);
         }
     }
 }

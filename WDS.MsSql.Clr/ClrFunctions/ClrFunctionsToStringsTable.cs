@@ -1,12 +1,16 @@
+// ReSharper disable UnusedMember.Global
+// ReSharper disable once CheckNamespace
+
 using System.Collections;
 using Microsoft.SqlServer.Server;
 
+// ReSharper disable once CheckNamespace
 public static partial class ClrFunctions
 {
     /// <summary>
-    /// Represents input items as a table. Is used together with ScrapeMultipleParams.GetAll
+    /// Projects supplied string items into one table row per value for use with <see cref="ScrapeMultipleParams.GetAll"/>.
     /// </summary>
-    /// <param name="items">Input items</param>
+    /// <param name="items">Supplies the string items to project into table rows.</param>
     /// <returns>Input items table</returns>
     [SqlFunction(
         DataAccess = DataAccessKind.None,

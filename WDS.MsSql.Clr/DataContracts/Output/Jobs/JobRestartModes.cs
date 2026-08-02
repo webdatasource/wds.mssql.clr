@@ -1,3 +1,6 @@
+// ReSharper disable CheckNamespace
+// ReSharper disable UnusedMember.Global
+
 /// <summary>
 /// Job restart mode enum
 /// </summary>

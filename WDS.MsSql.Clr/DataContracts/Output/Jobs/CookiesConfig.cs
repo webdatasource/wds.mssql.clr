@@ -1,16 +1,18 @@
+// ReSharper disable CheckNamespace
+
 using System.Data.SqlTypes;
 using System.IO;
 using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Cookies settings
+/// Configures whether the downloader stores response cookies and sends them on later requests.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class CookiesConfig : DataContractBase
 {
     /// <summary>
-    /// Defines if cookies should be saved and reused between requests
+    /// Optional. When true, persist and reuse cookies between requests for this job. False is the default.
     /// </summary>
     public bool UseCookies { get; set; }
 
@@ -25,6 +27,7 @@ public class CookiesConfig : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static CookiesConfig Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

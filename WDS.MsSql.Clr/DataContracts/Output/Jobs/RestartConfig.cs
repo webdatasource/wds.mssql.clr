@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System.Data.SqlTypes;
 using System.IO;
 using Microsoft.SqlServer.Server;
@@ -5,13 +7,13 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Defines what to do if a failed or completed job is restarted.
+/// Configures whether a restarted job keeps previous task data or starts clean.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class RestartConfig : DataContractBase
 {
     /// <summary>
-    /// String wrapper for JobRestartMode
+    /// Selects the job restart mode through its SQL-facing string representation.
     /// </summary>
     public string RestartMode
     {
@@ -20,9 +22,9 @@ public class RestartConfig : DataContractBase
     }
     
     /// <summary>
-    /// Job restart mode. <see cref="JobRestartModes"/>
+    /// Optional. Controls whether a restarted job keeps previous task data or starts clean. Continue is the default and resumes existing job data; FromScratch removes job tasks and related service data before crawling again from StartUrls.
     /// </summary>
-    public JobRestartModes JobRestartMode { get; set; }
+    public JobRestartModes JobRestartMode { get; private set; }
 
     /// <summary>
     /// Creates a new instance and fills it out from a config string of the following format 'RestartMode: <see cref="RestartMode">Possible values</see>'
@@ -35,6 +37,7 @@ public class RestartConfig : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static RestartConfig Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

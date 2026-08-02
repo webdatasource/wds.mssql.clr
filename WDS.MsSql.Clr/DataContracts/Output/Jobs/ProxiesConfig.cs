@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -7,7 +9,7 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Proxies config
+/// Configures proxy routing, proxy pools, and direct-request fallback behavior.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class ProxiesConfig : DataContractBase
@@ -15,24 +17,24 @@ public class ProxiesConfig : DataContractBase
     private static readonly char[] _availableHostsSeparator = { ',' };
 
     /// <summary>
-    /// Use proxies for requests
+    /// Optional. When true, route download requests through the configured proxy pool. False is the default.
     /// </summary>
     public bool UseProxy { get; set; }
 
     /// <summary>
-    /// Send a request from a host real IP address if all proxies failed
+    /// Optional. When true, fall back to a direct non-proxy request after all eligible proxies fail. False is the default.
     /// </summary>
     public bool SendOvertRequestsOnProxiesFailure { get; set; }
 
     /// <summary>
-    /// Comma-separated HTTP response codes to iterate proxies on. Optional. Default value is '401, 403'
+    /// Optional. HTTP status codes that cause a retry through the next proxy, separated by commas, semicolons, pipes, or ampersands. Null uses 401 and 403.
     /// </summary>
     public string IterateProxyResponseCodes { get; set; }
 
     /// <summary>
-    /// Proxy configurations
+    /// Optional. Proxy endpoints used when UseProxy is true. Null or empty provides no eligible proxies.
     /// </summary>
-    public ProxyConfig[] Proxies { get; set; }
+    public ProxyConfig[] Proxies { get; private set; }
 
     /// <summary>
     /// Adds a new proxy configuration
@@ -86,9 +88,10 @@ public class ProxiesConfig : DataContractBase
     /// <exception cref="InvalidDataException"></exception>
     public override void Validate()
     {
-        if (Proxies is not null)
-            foreach (var proxy in Proxies)
-                proxy.Validate();
+        if (Proxies is null)
+            return;
+        foreach (var proxy in Proxies)
+            proxy.Validate();
     }
 
     /// <summary>
@@ -103,7 +106,8 @@ public class ProxiesConfig : DataContractBase
         .MapArray<int>(nameof(IterateProxyResponseCodes), (proxiesConfig, iterateProxyResponseCodes) => proxiesConfig.IterateProxyResponseCodes = string.Join(", ", iterateProxyResponseCodes));
 
     #region MS SQL CLR Required methods and properties
-    
+
+    // ReSharper disable once UnusedMember.Global
     public static ProxiesConfig Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

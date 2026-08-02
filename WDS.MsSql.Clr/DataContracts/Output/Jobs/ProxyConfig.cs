@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -7,7 +9,7 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Proxy configuration 
+/// Configures one proxy endpoint for download requests.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class ProxyConfig : DataContractBase
@@ -28,29 +30,35 @@ public class ProxyConfig : DataContractBase
     public int Port { get; set; }
 
     /// <summary>
-    /// Proxy username
+    /// Optional. Proxy username.
     /// </summary>
     public string UserName { get; set; }
 
     /// <summary>
-    /// Proxy password
+    /// Optional. Proxy password.
     /// </summary>
     public string Password { get; set; }
 
     /// <summary>
-    /// Proxy connections limit (how many connections can be established through this proxy at one time)
+    /// Optional. Maximum concurrent connections through this proxy. Null applies no connection-count limit.
     /// </summary>
     public int? ConnectionsLimit { get; set; }
 
     /// <summary>
-    /// A list of available hosts that can be accessed through this proxy
+    /// Optional. Lowercase target hosts, or host:port values for non-default ports, that may use this proxy. Null or empty applies no target-host restriction.
     /// </summary>
     public string[] AvailableHosts { get; set; }
+
+    /// <summary>
+    /// Optional. Interval in seconds used to cap the wait before this proxy can be selected again for a target host.
+    /// </summary>
+    public int? RenewalIntervalSec { get; set; }
 
     /// <summary>
     /// Adds a new available host
     /// </summary>
     /// <param name="host">Available host</param>
+    // ReSharper disable once UnusedMethodReturnValue.Global
     public ProxyConfig AddAvailableHost(string host)
     {
         if (AvailableHosts is null)
@@ -92,10 +100,12 @@ public class ProxyConfig : DataContractBase
         .MapValue<string>(nameof(UserName), (proxyConfig, userName) => proxyConfig.UserName = userName)
         .MapValue<string>(nameof(Password), (proxyConfig, password) => proxyConfig.Password = password)
         .MapValue<int>(nameof(ConnectionsLimit), (proxyConfig, connectionsLimit) => proxyConfig.ConnectionsLimit = connectionsLimit)
-        .MapArray<string>(nameof(AvailableHosts), (proxyConfig, availableHosts) => proxyConfig.AvailableHosts = availableHosts);
+        .MapArray<string>(nameof(AvailableHosts), (proxyConfig, availableHosts) => proxyConfig.AvailableHosts = availableHosts)
+        .MapValue<int>(nameof(RenewalIntervalSec), (proxyConfig, renewalIntervalSec) => proxyConfig.RenewalIntervalSec = renewalIntervalSec);
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static ProxyConfig Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);
@@ -109,6 +119,8 @@ public class ProxyConfig : DataContractBase
         Password = r.ReadNullableString();
         ConnectionsLimit = r.ReadNullableInt();
         AvailableHosts = r.ReadNullableStringArray();
+        // Added in V3
+        RenewalIntervalSec = r.TryReadNullableInt(null);
     }
 
     protected override void BinaryWrite(BinaryWriter w)
@@ -120,6 +132,7 @@ public class ProxyConfig : DataContractBase
         w.WriteNullable(Password);
         w.WriteNullable(ConnectionsLimit);
         w.WriteNullable(AvailableHosts);
+        w.WriteNullable(RenewalIntervalSec);
     }
 
     #endregion

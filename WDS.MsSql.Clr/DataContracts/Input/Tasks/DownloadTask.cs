@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -7,7 +9,7 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Download task
+/// Represents one page download task created by job start, single-URL fetch, or link crawling.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class DownloadTask : ResponseDataContractBase
@@ -53,6 +55,7 @@ public class DownloadTask : ResponseDataContractBase
 
     public static DownloadTask Null { get; } = new() { IsNull = true };
 
+    // ReSharper disable once UnusedMember.Global
     public static DownloadTask Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

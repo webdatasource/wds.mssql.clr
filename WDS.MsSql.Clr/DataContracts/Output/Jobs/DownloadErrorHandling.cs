@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System.Data.SqlTypes;
 using System.IO;
 using System.Xml.Serialization;
@@ -6,13 +8,13 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Download error handling policy
+/// Configures the policy for failed download requests.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class DownloadErrorHandling : DataContractBase
 {
     /// <summary>
-    /// Enum filed wrapper for Policy
+    /// Selects the configured failed-download policy through its SQL-facing string representation.
     /// </summary>
     [XmlIgnore]
     public string ErrorHandlingPolicy
@@ -22,12 +24,12 @@ public class DownloadErrorHandling : DataContractBase
     }
     
     /// <summary>
-    /// Download error handling policy
+    /// Selects whether failed downloads are skipped or retried.
     /// </summary>
-    public DownloadErrorHandlingPolicies Policy { get; set; }
+    public DownloadErrorHandlingPolicies Policy { get; private set; }
 
     /// <summary>
-    /// Retry settings (if not set 0 values are used)
+    /// Optional. Required when Policy is Retry and otherwise unused. Specifies the delay and maximum retry count.
     /// </summary>
     public RetryPolicyParams RetryPolicyParams { get; set; }
 
@@ -42,6 +44,7 @@ public class DownloadErrorHandling : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static DownloadErrorHandling Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

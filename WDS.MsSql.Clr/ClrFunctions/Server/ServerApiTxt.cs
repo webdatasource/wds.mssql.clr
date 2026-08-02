@@ -3,7 +3,7 @@ using System.Net;
 
 namespace WDS.MsSql.Clr.Server
 {
-    internal class ServerApiTxt : ServerApi
+    internal abstract class ServerApiTxt : ServerApi
     {
         private const string _contentType = "text/plain";
 
@@ -12,7 +12,7 @@ namespace WDS.MsSql.Clr.Server
             var request = BuildRequest(uri, WebRequestMethods.Http.Get, _contentType);
             return TryRequest(request, out response, out error);
         }
-        
+
         private static bool TryRequest(HttpWebRequest request, out string response, out string error)
         {
             try

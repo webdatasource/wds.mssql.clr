@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -7,22 +9,22 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Default configuration for ALL requests
+/// Configures additional HTTP headers sent with download requests.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class HeadersConfig : DataContractBase
 {
     /// <summary>
-    /// Http headers that will be added to all requests
+    /// Optional. Additional HTTP headers sent with every request for this job. Null or empty sends no additional default headers.
     /// </summary>
-    public HttpHeader[] DefaultRequestHeaders { get; set; }
+    public HttpHeader[] DefaultRequestHeaders { get; private set; }
 
     /// <summary>
     /// Adds or replaces a header
     /// </summary>
     /// <param name="header">Http request header</param>
     /// <returns></returns>
-    public HeadersConfig AddHeader(HttpHeader header)
+    public void AddHeader(HttpHeader header)
     {
         var existingHeader = DefaultRequestHeaders?.FirstOrDefault(h => h.Name == header.Name);
         if (existingHeader == null)
@@ -43,8 +45,6 @@ public class HeadersConfig : DataContractBase
         {
             existingHeader.Values = header.Values;
         }
-
-        return this;
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ public class HeadersConfig : DataContractBase
     /// <param name="name">Header name</param>
     /// <param name="value">Header value</param>
     /// <returns></returns>
-    public HeadersConfig AppendHeader(string name, string value)
+    public void AppendHeader(string name, string value)
     {
         var header = DefaultRequestHeaders?.FirstOrDefault(h => h.Name == name);
         if (header == null)
@@ -82,8 +82,6 @@ public class HeadersConfig : DataContractBase
             values[values.Length - 1] = value;
             header.Values = values;
         }
-
-        return this;
     }
 
     /// <summary>
@@ -92,9 +90,10 @@ public class HeadersConfig : DataContractBase
     /// <exception cref="NullReferenceException"></exception>
     public override void Validate()
     {
-        if (DefaultRequestHeaders is not null)
-            foreach (var defaultRequestHeader in DefaultRequestHeaders)
-                defaultRequestHeader.Validate();
+        if (DefaultRequestHeaders is null)
+            return;
+        foreach (var defaultRequestHeader in DefaultRequestHeaders)
+            defaultRequestHeader.Validate();
     }
 
     /// <summary>
@@ -107,6 +106,7 @@ public class HeadersConfig : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static HeadersConfig Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);

@@ -9,12 +9,18 @@ namespace WDS.MsSql.Clr.Tests
     [TestFixture]
     public class DataContractMatchTests
     {
-        private static readonly Assembly _dapiAssembly = Assembly.LoadFile(Path.GetFullPath("../../../../wds.kesa.dotnet/Dapi/WDS.Dapi.Core/bin/Debug/net8.0/WDS.Dapi.Core.dll"));
+        private static readonly Assembly _dapiAssembly = Assembly.LoadFile(Path.GetFullPath("../../../../wds.kesa.dotnet/Dapi/WDS.Dapi.Core/bin/Debug/net10.0/WDS.Dapi.Core.dll"));
 
         [Test]
         [TestCase("WDS.Dapi.Core.PublicDataContracts.Input.Jobs.JobConfig", typeof(JobConfig))]
         [TestCase("WDS.Dapi.Core.PublicDataContracts.Output.Tasks.DownloadTask", typeof(DownloadTask))]
         [TestCase("WDS.Dapi.Core.PublicDataContracts.Output.Tasks.Info.DownloadTaskStatus", typeof(DownloadTaskStatus))]
+        [TestCase("WDS.Dapi.Core.PublicDataContracts.Input.Tasks.CrawlParams", typeof(CrawlParams))]
+        [TestCase("WDS.Dapi.Core.PublicDataContracts.Input.Tasks.ScrapeParams", typeof(ScrapeParams))]
+        [TestCase("WDS.Dapi.Core.PublicDataContracts.Input.Jobs.HostConfig", typeof(HostConfig))]
+        [TestCase("WDS.Dapi.Core.PublicDataContracts.Input.Jobs.Proxies.ProxyConfig", typeof(ProxyConfig))]
+        [TestCase("WDS.Dapi.Core.PublicDataContracts.Input.Jobs.Retrieval.RetrievalConfig", typeof(RetrievalConfig))]
+        [TestCase("WDS.Dapi.Core.PublicDataContracts.Input.Jobs.Retrieval.RetrievalContentScope", typeof(RetrievalContentScope))]
         public void JobConfigTest(string dapiDataContractTypeFullName, Type thisDataContractType)
         {
             var dapiDataContractType = _dapiAssembly.GetType(dapiDataContractTypeFullName);

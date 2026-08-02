@@ -1,3 +1,7 @@
+// ReSharper disable CheckNamespace
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Global
+
 using System.Data.SqlTypes;
 using System.IO;
 using System.Xml.Serialization;
@@ -6,11 +10,16 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Download task execution status
+/// Reports the current state and request history for a download task.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class DownloadTaskStatus : ResponseDataContractBase
 {
+    /// <summary>
+    /// Downloaded URL
+    /// </summary>
+    public string Url { get; set; }
+
     /// <summary>
     /// Enum filed wrapper for State
     /// </summary>
@@ -23,15 +32,14 @@ public class DownloadTaskStatus : ResponseDataContractBase
     public DownloadTaskStates State { get; set; }
 
     /// <summary>
-    /// Download result
+    /// Optional. Final download attempt details, or null when no attempt result is available.
     /// </summary>
     public DownloadInfo Result { get; set; }
 
     /// <summary>
-    /// Intermediate requests download results stack
+    /// Optional. Earlier attempt details such as redirects or proxy retries. Null means no attempt history is available; an empty array means only the final result exists.
     /// </summary>
     public DownloadInfo[] IntermedResults { get; set; }
-
 
     #region MS SQL CLR Required methods and properties
 
@@ -39,6 +47,7 @@ public class DownloadTaskStatus : ResponseDataContractBase
 
     public static DownloadTaskStatus Null { get; } = new() { IsNull = true };
 
+    // ReSharper disable once UnusedMember.Global
     public static DownloadTaskStatus Parse(SqlString s) => _dataContractSerializer.Parse(s.Value);
 
     public override string ToString() => _dataContractSerializer.Serialize(this);
@@ -48,6 +57,8 @@ public class DownloadTaskStatus : ResponseDataContractBase
         State = r.ReadEnum<DownloadTaskStates>();
         Result = r.ReadNullable<DownloadInfo>();
         IntermedResults = r.ReadArrayNullable<DownloadInfo>();
+        // Added in V3
+        Url = r.TryReadString(string.Empty);
     }
 
     protected override void BinaryWrite(BinaryWriter w)
@@ -55,6 +66,7 @@ public class DownloadTaskStatus : ResponseDataContractBase
         w.WriteEnum(State);
         w.WriteNullable(Result);
         w.WriteNullable(IntermedResults);
+        w.Write(Url);
     }
 
     #endregion

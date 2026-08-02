@@ -1,3 +1,7 @@
+// ReSharper disable CheckNamespace
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -8,7 +12,7 @@ using WDS.MsSql.Clr.Serialization;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Job settings
+/// Defines a job's entry URLs and runtime options for downloading, crawling, scraping, retries, proxies, cross-domain links, and optional retrieval indexing.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class JobConfig : DataContractBase
@@ -23,6 +27,7 @@ public class JobConfig : DataContractBase
     /// Enum filed wrapper for Type
     /// </summary>
     [XmlIgnore]
+    // ReSharper disable once UnusedMember.Global
     public string JobType
     {
         get => Type?.ToString();
@@ -36,54 +41,64 @@ public class JobConfig : DataContractBase
     public string JobName { get; set; }
 
     /// <summary>
-    /// Job start URLs
+    /// Optional. Initial URLs used to create download tasks on job start. A saved config may omit them, but at least one URL is required to start the job.
     /// </summary>
     public string[] StartUrls { get; set; }
 
     /// <summary>
-    /// Job type <see cref="JobTypes"/>
+    /// Optional. Crawler network profile. Internet uses public-source request gateways; Intranet uses internal-source gateways. Null uses the first service-configured allowed job type.
     /// </summary>
     public JobTypes? Type { get; set; }
 
     /// <summary>
-    /// Headers settings
+    /// Optional. Additional HTTP headers for download requests. Null sends no additional default headers.
     /// </summary>
     public HeadersConfig Headers { get; set; }
 
     /// <summary>
-    /// Job restart settings
+    /// Optional. Behavior when starting a job that has prior tasks or cached data. Null uses Continue.
     /// </summary>
     public RestartConfig Restart { get; set; }
 
     /// <summary>
-    /// HTTPS settings
+    /// Optional. HTTPS certificate-validation behavior. Null validates certificates normally.
     /// </summary>
     public HttpsConfig Https { get; set; }
 
     /// <summary>
-    /// Cookies settings
+    /// Optional. Cookie persistence behavior. Null does not persist cookies.
     /// </summary>
     public CookiesConfig Cookies { get; set; }
 
     /// <summary>
-    /// Proxy settings
+    /// Optional. Proxy routing, pool, and direct-request fallback behavior. Null uses non-proxy request gateways.
     /// </summary>
     public ProxiesConfig Proxy { get; set; }
 
     /// <summary>
-    /// Download errors handling settings
+    /// Optional. Failed-download policy. Null does not retry failed requests.
     /// </summary>
     public DownloadErrorHandling DownloadErrorHandling { get; set; }
 
     /// <summary>
-    /// Crawlers' protection countermeasure settings
+    /// Optional. Response, timeout, redirect, and per-host pacing overrides. Null uses downloader defaults.
     /// </summary>
     public CrawlersProtectionBypass CrawlersProtectionBypass { get; set; }
 
     /// <summary>
-    /// Cross-domain access settings
+    /// Optional. SQL CLR representation of the discovered-link host policy. Its policy value is currently excluded from API XML and therefore is not transmitted to Dapi.
     /// </summary>
     public CrossDomainAccess CrossDomainAccess { get; set; }
+
+    /// <summary>
+    /// Optional. Retrieval-index enrollment settings. Null does not enroll downloaded content.
+    /// </summary>
+    public RetrievalConfig Retrieval { get; set; }
+
+    /// <summary>
+    /// Optional. Host lifecycle settings such as robots.txt and cookie refresh cadence. Null uses the 7-day reinitialization default.
+    /// </summary>
+    public HostConfig Host { get; set; }
 
     /// <summary>
     /// Adds a new start URL
@@ -127,6 +142,8 @@ public class JobConfig : DataContractBase
         DownloadErrorHandling?.Validate();
         CrawlersProtectionBypass?.Validate();
         CrossDomainAccess?.Validate();
+        Retrieval?.Validate();
+        Host?.Validate();
     }
 
     /// <summary>
@@ -147,6 +164,7 @@ public class JobConfig : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static JobConfig Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);
@@ -164,6 +182,10 @@ public class JobConfig : DataContractBase
         Proxy = r.ReadNullable<ProxiesConfig>();
         DownloadErrorHandling = r.ReadNullable<DownloadErrorHandling>();
         CrawlersProtectionBypass = r.ReadNullable<CrawlersProtectionBypass>();
+        // Added in V3
+        CrossDomainAccess = r.TryReadNullable<CrossDomainAccess>(null);
+        Retrieval = r.TryReadNullable<RetrievalConfig>(null);
+        Host = r.TryReadNullable<HostConfig>(null);
     }
 
     protected override void BinaryWrite(BinaryWriter w)
@@ -179,6 +201,9 @@ public class JobConfig : DataContractBase
         w.WriteNullable(Proxy);
         w.WriteNullable(DownloadErrorHandling);
         w.WriteNullable(CrawlersProtectionBypass);
+        w.WriteNullable(CrossDomainAccess);
+        w.WriteNullable(Retrieval);
+        w.WriteNullable(Host);
     }
 
     #endregion

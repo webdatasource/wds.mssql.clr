@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Data.SqlTypes;
 using System.IO;
@@ -5,7 +7,7 @@ using Microsoft.SqlServer.Server;
 using WDS.MsSql.Clr.Serialization.DataContracts;
 
 /// <summary>
-/// Crawl delay for a host
+/// Configures request pacing for one target host.
 /// </summary>
 [SqlUserDefinedType(Format.UserDefined, MaxByteSize = 8000, IsByteOrdered = true)]
 public class CrawlDelay : DataContractBase
@@ -14,12 +16,12 @@ public class CrawlDelay : DataContractBase
     private static readonly char[] _delayRangeSeparator = { '-' };
 
     /// <summary>
-    /// Host
+    /// Lowercase target host, or host:port for a non-default port, to which this delay applies.
     /// </summary>
     public string Host { get; set; }
 
     /// <summary>
-    /// Delay string. Can be either a number, a range of numbers separated by a dash or 'robots' (0|3|0-3|robots)
+    /// Per-host wait between requests. Use <c>0</c> for no extra delay, an integer for fixed seconds, a range such as <c>1-5</c> for a random value from 1 inclusive to 5 exclusive, or <c>robots</c> to use the robots.txt crawl-delay when available.
     /// </summary>
     public string Delay { get; set; }
 
@@ -56,6 +58,7 @@ public class CrawlDelay : DataContractBase
 
     #region MS SQL CLR Required methods and properties
 
+    // ReSharper disable once UnusedMember.Global
     public static CrawlDelay Null { get; } = new() { IsNull = true };
 
     public override string ToString() => _dataContractSerializer.Serialize(this);
